@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>The Cliffs — A Luxury Retreat in the Western Ghats</title>
+<meta name="description" content="Three suites at the edge of a 1,400-metre drop in the Western Ghats, an hour above the nearest town. Booking handled by Airbnb.">
+<link rel="canonical" href="https://the-cliffs.netlify.app/">
+<meta name="theme-color" content="#F4F1EA">
+
+<!-- Hero preload before the stylesheets so the preload scanner finds it first.
+     The hero image below carries an identical srcset/sizes, or this is wasted. -->
+<link rel="preload" as="image" fetchpriority="high"
+      imagesrcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                   assets/images/hero-cloudline-1920.jpg 1920w"
+      imagesizes="100vw">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Cliffs">
+<meta property="og:title" content="The Cliffs — A Luxury Retreat in the Western Ghats">
+<meta property="og:description" content="Three suites at the edge of a 1,400-metre drop in the Western Ghats, an hour above the nearest town.">
+<meta property="og:url" content="https://the-cliffs.netlify.app/">
+<meta property="og:image" content="https://the-cliffs.netlify.app/assets/images/og-cover-1280.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="853">
+<meta property="og:image:alt" content="Cloud moving through forested ridges in the Western Ghats at first light.">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..500;1,6..96,400..500&family=Instrument+Sans:wght@400;500&display=swap">
+
+<link rel="stylesheet" href="css/01-tokens.css">
+<link rel="stylesheet" href="css/02-base.css">
+<link rel="stylesheet" href="css/03-layout.css">
+<link rel="stylesheet" href="css/04-components.css">
+<link rel="stylesheet" href="css/05-sections.css">
+<link rel="stylesheet" href="css/06-motion.css">
+
+<!-- Scopes every "hidden until revealed" rule to .js. Without this, a failed
+     script would leave the whole page invisible instead of merely unanimated. -->
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ═══ The Ascent — elevation spine (desktop only, decorative) ═══ -->
+<div class="spine" aria-hidden="true">
+  <div class="spine__track"><div class="spine__fill"></div></div>
+  <div class="spine__readout"><span data-ascent-readout>840 M</span></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="nav__brand" href="#hero">
+      The Cliffs
+      <small>Western&nbsp;Ghats</small>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      <a class="nav__link" href="#place">The place</a>
+      <a class="nav__link" href="#suites">Suites</a>
+      <a class="nav__link" href="#experiences">Days here</a>
+      <a class="nav__link" href="#gallery">Gallery</a>
+      <a class="nav__link" href="#location">Getting here</a>
+      <a class="nav__link" href="#questions">Questions</a>
+    </nav>
+
+    <a class="btn btn--brass btn--sm nav__cta"
+       data-cta="nav"
+       href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+      Book on Airbnb
+      <span class="btn__badge" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ══════════ 1 · HERO — 840 M ══════════
+       A single rounded card: photograph, scrim, copy anchored bottom-left,
+       and a booking bar straddling the lower edge. The sticky nav is styled
+       to float inside the card's top edge, but lives outside it in the DOM —
+       `position: sticky` cannot survive an `overflow: hidden` ancestor.     -->
+  <section class="section hero" id="hero" aria-labelledby="hero-title" data-theme="dark">
+
+    <!-- The track exists only to supply scroll distance. The stage pins to the
+         top of it, and progress through the track (0 → 1) drives every value
+         below via a single custom property, --p.
+
+         The original React component hijacked the wheel event and forced
+         scrollTo(0,0) until expansion finished. That breaks keyboard scrolling,
+         scrollbar dragging, Page Down and find-in-page. A sticky pin driven by
+         real scroll position gives the identical effect and breaks none of it.
+
+         Without JS the track collapses to auto height and --p stays 1, so the
+         hero renders in its final, fully-open state. -->
+    <div class="hero__track">
+      <div class="hero__stage">
+
+        <img data-slot="hero-cloudline"
+             src="assets/images/hero-cloudline-1920.jpg"
+             srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                     assets/images/hero-cloudline-1920.jpg 1920w"
+             sizes="100vw"
+             width="1920" height="1280"
+             fetchpriority="high" decoding="async"
+             class="hero__bg"
+             alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+
+        <div class="hero__scrim" aria-hidden="true"></div>
+
+        <!-- The property itself, opening out of the landscape as you scroll -->
+        <figure class="hero__reveal">
+          <img data-slot="hero-reveal"
+               src="assets/images/hero-reveal-960.jpg"
+               srcset="assets/images/hero-reveal-960.jpg 960w,
+                       assets/images/hero-reveal-1440.jpg 1440w"
+               sizes="(max-width: 768px) 90vw, 1100px"
+               width="1440" height="960"
+               decoding="async"
+               alt="The pool terrace at dusk, lit from within, looking out over the valley.">
+          <span class="hero__reveal-veil" aria-hidden="true"></span>
+        </figure>
+
+        <h1 class="hero__title" id="hero-title">
+          <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
+          <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
+        </h1>
+
+        <p class="label hero__cue" aria-hidden="true">Scroll to open</p>
+      </div>
+    </div>
+
+    <!-- Revealed once the property image has finished opening -->
+    <div class="hero__after">
+      <div class="hero__inner">
+        <p class="label hero__eyebrow">
+          <span class="altitude">840 M</span> &nbsp;·&nbsp; Western Ghats, India
+        </p>
+
+        <p class="hero__lead">
+          Three suites at the edge of a 1,400&nbsp;metre drop, an hour above the
+          nearest town. The forest starts where the veranda ends.
+        </p>
+
+        <p class="trust-pill trust-pill--glass">
+          <span class="trust-pill__mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8.5l3 3 6-6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Booking, payment and cancellation handled by Airbnb
+        </p>
+      </div>
+
+        <!-- Unlike the reference's decorative search bar, this one works:
+             the dates and guest count are appended to the Airbnb URL as
+             check_in / check_out / adults, so the listing opens already
+             filled in. With JS off the button still links to the listing. -->
+        <div class="checkbar" role="group" aria-labelledby="checkbar-title">
+          <h2 class="sr-only" id="checkbar-title">Check availability</h2>
+
+          <div class="checkbar__field">
+            <label class="checkbar__label" for="cb-in">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2.25" y="3.25" width="11.5" height="10.5" rx="2"/><path d="M2.25 6.75h11.5M5.5 1.75v2.5M10.5 1.75v2.5" stroke-linecap="round"/></svg>
+              Check-in
+            </label>
+            <input class="checkbar__input" type="date" id="cb-in" data-checkbar="in">
+          </div>
+
+          <div class="checkbar__field">
+            <label class="checkbar__label" for="cb-out">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2.25" y="3.25" width="11.5" height="10.5" rx="2"/><path d="M2.25 6.75h11.5M5.5 1.75v2.5M10.5 1.75v2.5" stroke-linecap="round"/></svg>
+              Check-out
+            </label>
+            <input class="checkbar__input" type="date" id="cb-out" data-checkbar="out">
+          </div>
+
+          <div class="checkbar__field">
+            <label class="checkbar__label" for="cb-guests">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="5.5" r="2.75"/><path d="M2.75 13.75c0-2.9 2.35-5.25 5.25-5.25s5.25 2.35 5.25 5.25" stroke-linecap="round"/></svg>
+              Guests
+            </label>
+            <select class="checkbar__input" id="cb-guests" data-checkbar="guests">
+              <option value="">Add guests</option>
+              <option value="1">1 guest</option>
+              <option value="2" selected>2 guests</option>
+              <option value="3">3 guests</option>
+              <option value="4">4 guests</option>
+              <option value="5">5 guests</option>
+              <option value="6">6 guests</option>
+              <option value="7">7 guests</option>
+              <option value="8">8 guests</option>
+            </select>
+          </div>
+
+          <a class="checkbar__go" data-cta="checkbar" data-checkbar="go"
+             href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+            <span class="checkbar__go-text">Check dates</span>
+            <span class="checkbar__go-badge" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="sr-only"> on Airbnb, opens in a new tab</span>
+          </a>
+        </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 2 · THE PLACE — 960 M ══════════ -->
+  <section class="section place" id="place" aria-labelledby="place-title">
+    <div class="container">
+
+      <div class="split">
+        <div class="place__prose reveal">
+          <p class="label section-head__eyebrow">
+            <span class="altitude">960 M</span> &nbsp;·&nbsp; The arrival
+          </p>
+          <h2 id="place-title">The road runs out before the view&nbsp;does.</h2>
+          <p class="place__lede">
+            You leave the highway at a junction with no sign worth reading, and for
+            the next hour the road does nothing but climb. Coffee under silver oak.
+            Then cardamom. Then nothing planted at all.
+          </p>
+          <p>
+            Somewhere around the ninth switchback the light changes and you realise
+            you have driven up through the cloud rather than under it. The valley
+            you were looking at is now beneath you, and what is above you is
+            entirely sky.
+          </p>
+          <p class="place__onward">
+            <a class="link-inline" href="#location">The drive up takes about an hour &rarr;</a>
+          </p>
+        </div>
+
+        <div class="place__media reveal reveal-img reveal--right">
+          <div class="frame">
+            <img data-slot="place-road"
+                 src="assets/images/place-road-1280.jpg"
+                 sizes="(min-width: 900px) 56vw, 92vw"
+                 width="1280" height="853"
+                 loading="lazy" decoding="async"
+                 alt="A red laterite track climbing through dense coffee plantation and palms.">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pinned band: holds while the page scrolls past it -->
+    <div class="place__band bleed">
+      <div class="place__band-sticky">
+        <div class="frame">
+          <img data-slot="place-band"
+               src="assets/images/place-band-1920.jpg"
+               sizes="100vw"
+               width="1920" height="1280"
+               loading="lazy" decoding="async"
+               class="place__band-img"
+               alt="Mist rolling low across terraced tea slopes in the Western Ghats.">
+          <!-- No .mist here, for the same reason as the hero: this photograph
+               is already three-quarters cloud, and the overlay bleached it to
+               near-white. The mist belongs on crisp images, not misty ones. -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 3 · THE SUITES — 1120 M ══════════ -->
+  <section class="section suites" id="suites" data-theme="dark" aria-labelledby="suites-title">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <p class="label section-head__eyebrow">
+          <span class="altitude">1120 M</span> &nbsp;·&nbsp; The suites
+        </p>
+        <h2 id="suites-title">Three rooms, one horizon.</h2>
+        <p class="section-head__lead">
+          The whole house sleeps eight. Take one room or take all three — either way
+          you will not hear the others.
+        </p>
+      </div>
+
+      <div class="suites__list">
+
+        <article class="suite reveal reveal--group">
+          <div class="suite__media">
+            <div class="frame">
+              <img data-slot="suite-canopy"
+                   src="assets/images/suite-canopy-1280.jpg"
+                   srcset="assets/images/suite-canopy-1280.jpg 1280w,
+                           assets/images/suite-canopy-1920.jpg 1920w"
+                   sizes="(min-width: 900px) 52vw, 92vw"
+                   width="1920" height="1280"
+                   loading="lazy" decoding="async"
+                   alt="A four-poster teak bed with white muslin drapes, terracotta floor and tall shuttered doors open to greenery.">
+            </div>
+          </div>
+          <div class="suite__body">
+            <div class="suite__rule" aria-hidden="true"></div>
+            <h3>The Canopy Suite</h3>
+            <p class="label suite__meta"><span>Two guests</span><span>King bed</span><span>Valley facing</span></p>
+            <ul class="suite__amenities">
+              <li>Private veranda over the drop</li>
+              <li>Muslin-draped four-poster, teak floors</li>
+              <li>Wood-burning stove for the cold months</li>
+            </ul>
+            <a class="btn btn--brass suite__cta"
+               data-cta="suite-canopy"
+               href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+              Check dates for the Canopy Suite
+              <span class="btn__badge" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </div>
+        </article>
+
+        <article class="suite suite--flip reveal reveal--group">
+          <div class="suite__media">
+            <div class="frame">
+              <img data-slot="suite-veranda"
+                   src="assets/images/suite-veranda-1280.jpg"
+                   srcset="assets/images/suite-veranda-1280.jpg 1280w,
+                           assets/images/suite-veranda-1920.jpg 1920w"
+                   sizes="(min-width: 900px) 52vw, 92vw"
+                   width="1920" height="1280"
+                   loading="lazy" decoding="async"
+                   alt="A sitting room with a low teak daybed, cane armchairs and arched doors opening onto the garden.">
+            </div>
+          </div>
+          <div class="suite__body">
+            <div class="suite__rule" aria-hidden="true"></div>
+            <h3>The Long Room</h3>
+            <p class="label suite__meta"><span>Four guests</span><span>King &amp; daybed</span><span>Corner windows</span></p>
+            <ul class="suite__amenities">
+              <li>Windows on two sides — sunrise and last light</li>
+              <li>Separate sitting room with a fireplace</li>
+              <li>The best room for a family, or for reading</li>
+            </ul>
+            <a class="btn btn--brass suite__cta"
+               data-cta="suite-long-room"
+               href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+              Check dates for the Long Room
+              <span class="btn__badge" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </div>
+        </article>
+
+        <article class="suite reveal reveal--group">
+          <div class="suite__media">
+            <div class="frame">
+              <img data-slot="suite-bath"
+                   src="assets/images/suite-bath-1280.jpg"
+                   srcset="assets/images/suite-bath-1280.jpg 1280w,
+                           assets/images/suite-bath-1920.jpg 1920w"
+                   sizes="(min-width: 900px) 52vw, 92vw"
+                   width="1920" height="1280"
+                   loading="lazy" decoding="async"
+                   alt="A freestanding bath below three tall green-framed windows looking onto palms.">
+            </div>
+          </div>
+          <div class="suite__body">
+            <div class="suite__rule" aria-hidden="true"></div>
+            <h3>The Rain Room</h3>
+            <p class="label suite__meta"><span>Two guests</span><span>King bed</span><span>Monsoon facing</span></p>
+            <ul class="suite__amenities">
+              <li>Freestanding bath under the west windows</li>
+              <li>Built for the monsoon — you will want to be here for it</li>
+              <li>Deepest quiet of the three rooms</li>
+            </ul>
+            <a class="btn btn--brass suite__cta"
+               data-cta="suite-rain-room"
+               href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+              Check dates for the Rain Room
+              <span class="btn__badge" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 4 · EXPERIENCES — 1240 M ══════════ -->
+  <section class="section exp" id="experiences" aria-labelledby="exp-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label section-head__eyebrow">
+          <span class="altitude">1240 M</span> &nbsp;·&nbsp; Days here
+        </p>
+        <h2 id="exp-title">What the day does to you&nbsp;here.</h2>
+        <p class="section-head__lead">
+          Nothing is scheduled. This is roughly what happens anyway.
+        </p>
+      </div>
+    </div>
+
+    <div class="exp__rail-wrap">
+      <div class="exp__pin">
+        <div class="container">
+          <ul class="rail" tabindex="0" aria-label="Things to do at The Cliffs — scroll horizontally">
+
+            <li class="rail__panel">
+              <div class="frame">
+                <img data-slot="exp-coffee" src="assets/images/exp-coffee-1280.jpg"
+                     sizes="(min-width: 900px) 40vw, 78vw" width="1280" height="853"
+                     loading="lazy" decoding="async"
+                     alt="A steel tumbler of South Indian filter coffee, poured and frothing.">
+              </div>
+              <p class="label rail__index">06:10</p>
+              <h3 class="rail__title">Coffee before the cloud lifts</h3>
+              <p class="rail__text">Filter kaapi on the veranda while the valley is still filling in. It burns off by seven.</p>
+            </li>
+
+            <li class="rail__panel">
+              <div class="frame">
+                <img data-slot="exp-trogon" src="assets/images/exp-trogon-1280.jpg"
+                     sizes="(min-width: 900px) 40vw, 78vw" width="1280" height="853"
+                     loading="lazy" decoding="async"
+                     alt="A Malabar trogon perched on a mossy branch, orange breast against green forest.">
+              </div>
+              <p class="label rail__index">07:30</p>
+              <h3 class="rail__title">The forest wakes up loud</h3>
+              <p class="rail__text">Malabar trogon, hornbill, whistling thrush. Bring binoculars; you will not need a guide.</p>
+            </li>
+
+            <li class="rail__panel">
+              <div class="frame">
+                <img data-slot="exp-tea" src="assets/images/exp-tea-1920.jpg"
+                     sizes="(min-width: 900px) 40vw, 78vw" width="1920" height="839"
+                     loading="lazy" decoding="async"
+                     alt="Terraced tea slopes rolling away toward distant peaks under a wide sky.">
+              </div>
+              <p class="label rail__index">10:00</p>
+              <h3 class="rail__title">Walk out along the ridge</h3>
+              <p class="rail__text">An estate track follows the contour for four kilometres. No gates, no ticket, no one else.</p>
+            </li>
+
+            <li class="rail__panel">
+              <div class="frame">
+                <img data-slot="exp-waterfall" src="assets/images/exp-waterfall-1280.jpg"
+                     sizes="(min-width: 900px) 40vw, 78vw" width="1280" height="853"
+                     loading="lazy" decoding="async"
+                     alt="A waterfall falling through dense green forest in the Western Ghats.">
+              </div>
+              <p class="label rail__index">15:00</p>
+              <h3 class="rail__title">Down to the water</h3>
+              <p class="rail__text">Forty minutes down through shola forest to a pool cold enough to make you shout.</p>
+            </li>
+
+            <li class="rail__panel">
+              <div class="frame">
+                <img data-slot="exp-spa" src="assets/images/exp-spa-1280.jpg"
+                     sizes="(min-width: 900px) 40vw, 78vw" width="1280" height="853"
+                     loading="lazy" decoding="async"
+                     alt="A quiet treatment room with a made massage bed and shuttered windows.">
+              </div>
+              <p class="label rail__index">18:45</p>
+              <h3 class="rail__title">Then nothing at all</h3>
+              <p class="rail__text">A treatment can be arranged in the room. Most people just sit outside until it is dark.</p>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <p class="exp__close reveal">
+        All of it starts at the door.
+        <a class="link-inline" data-cta="experiences"
+           href="https://www.airbnb.co.in/" target="_blank" rel="noopener">See what's included on Airbnb &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 5 · GALLERY — 1310 M ══════════ -->
+  <section class="section gallery-section" id="gallery" data-theme="dark" aria-labelledby="gallery-title">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <p class="label section-head__eyebrow">
+          <span class="altitude">1310 M</span> &nbsp;·&nbsp; Gallery
+        </p>
+        <h2 id="gallery-title">Look closer.</h2>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter photographs">
+        <button class="filter" type="button" data-filter="all"   aria-pressed="true">All</button>
+        <button class="filter" type="button" data-filter="rooms" aria-pressed="false">Rooms</button>
+        <button class="filter" type="button" data-filter="land"  aria-pressed="false">The land</button>
+        <button class="filter" type="button" data-filter="table" aria-pressed="false">The table</button>
+      </div>
+
+      <ul class="gallery reveal reveal--group" id="gallery-grid">
+
+        <li class="gallery__item gallery__item--wide" data-cat="land" style="--i:0">
+          <button class="gallery__btn" type="button" data-slot="gallery-cliff-figure" data-full="assets/images/gallery-cliff-figure-1920.jpg">
+            <img src="assets/images/gallery-cliff-figure-960.jpg" sizes="(min-width:1180px) 45vw, (min-width:760px) 60vw, 92vw"
+                 width="960" height="540" loading="lazy" decoding="async"
+                 alt="A lone figure standing at the edge of a cliff, silhouetted against the last light.">
+          </button>
+        </li>
+
+        <li class="gallery__item gallery__item--tall" data-cat="land" style="--i:1">
+          <button class="gallery__btn" type="button" data-slot="gallery-mist-layers" data-full="assets/images/gallery-mist-layers-1920.jpg">
+            <img src="assets/images/gallery-mist-layers-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="723" loading="lazy" decoding="async"
+                 alt="Layer upon layer of forested ridges fading into haze.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="rooms" style="--i:2">
+          <button class="gallery__btn" type="button" data-slot="gallery-suite-bed" data-full="assets/images/gallery-suite-bed-1920.jpg">
+            <img src="assets/images/gallery-suite-bed-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="720" loading="lazy" decoding="async"
+                 alt="A canopy bed with white drapes in a high-ceilinged room.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="rooms" style="--i:3">
+          <button class="gallery__btn" type="button" data-slot="gallery-lounge-dusk" data-full="assets/images/gallery-lounge-dusk-1920.jpg">
+            <img src="assets/images/gallery-lounge-dusk-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="686" loading="lazy" decoding="async"
+                 alt="A lamplit lounge with teak and cane furniture at dusk.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="land" style="--i:4">
+          <button class="gallery__btn" type="button" data-slot="gallery-sunrise" data-full="assets/images/gallery-sunrise-1920.jpg">
+            <img src="assets/images/gallery-sunrise-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="720" loading="lazy" decoding="async"
+                 alt="Sunrise over hills, low cloud sitting in the valleys below.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="rooms" style="--i:5">
+          <button class="gallery__btn" type="button" data-slot="gallery-library" data-full="assets/images/gallery-library-1920.jpg">
+            <img src="assets/images/gallery-library-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="640" loading="lazy" decoding="async"
+                 alt="A small library with shelves of books and a reading chair.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="table" style="--i:6">
+          <button class="gallery__btn" type="button" data-slot="gallery-table" data-full="assets/images/gallery-table-1920.jpg">
+            <img src="assets/images/gallery-table-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="640" loading="lazy" decoding="async"
+                 alt="A laid dining table with white linen and low lamplight.">
+          </button>
+        </li>
+
+        <li class="gallery__item gallery__item--tall" data-cat="land" style="--i:7">
+          <button class="gallery__btn" type="button" data-slot="gallery-shola" data-full="assets/images/gallery-shola-1920.jpg">
+            <img src="assets/images/gallery-shola-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="640" loading="lazy" decoding="async"
+                 alt="Shola cloud forest — dense stunted trees in a fold of grassland.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="rooms" style="--i:8">
+          <button class="gallery__btn" type="button" data-slot="gallery-pool" data-full="assets/images/gallery-pool-1920.jpg">
+            <img src="assets/images/gallery-pool-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="640" loading="lazy" decoding="async"
+                 alt="A long pool and terrace surrounded by palms.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="table" style="--i:9">
+          <button class="gallery__btn" type="button" data-slot="gallery-spices" data-full="assets/images/gallery-spices-1920.jpg">
+            <img src="assets/images/gallery-spices-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="640" loading="lazy" decoding="async"
+                 alt="Cardamom and pepper growing in a spice plantation.">
+          </button>
+        </li>
+
+        <li class="gallery__item" data-cat="land" style="--i:10">
+          <button class="gallery__btn" type="button" data-slot="gallery-ponmudi" data-full="assets/images/gallery-ponmudi-1920.jpg">
+            <img src="assets/images/gallery-ponmudi-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="960" height="639" loading="lazy" decoding="async"
+                 alt="Green hills falling away in folds toward a distant plain.">
+          </button>
+        </li>
+
+        <!-- Terminal card: the last cell is not a photograph. It sits where
+             appetite peaks and reads as utility rather than a pitch. -->
+        <li class="gallery__item gallery__item--terminal">
+          <a class="gallery__more" data-cta="gallery"
+             href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+            <strong>+ 34 more photos</strong>
+            <span>See the full set on Airbnb &rarr;</span>
+          </a>
+        </li>
+
+      </ul>
+
+      <p class="gallery__status" role="status" aria-live="polite" data-gallery-status></p>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 6 · LOCATION — 1380 M ══════════ -->
+  <section class="section loc" id="location" aria-labelledby="loc-title">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <p class="label section-head__eyebrow">
+          <span class="altitude">1380 M</span> &nbsp;·&nbsp; Getting here
+        </p>
+        <h2 id="loc-title">Getting here is part of&nbsp;it.</h2>
+      </div>
+
+      <div class="cols-2">
+        <div class="loc__map reveal">
+          <svg viewBox="0 0 480 220" role="img" aria-label="Stylised map of the ridge, with The Cliffs marked near the summit.">
+            <path class="ridge-line" d="M6 186 L64 150 L104 166 L150 118 L196 140 L242 74 L288 108 L330 88 L376 124 L424 100 L474 132"
+                  fill="none" stroke="#3D4A3F" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M6 200 L64 172 L104 186 L150 148 L196 164 L242 112 L288 138 L330 122 L376 150 L424 130 L474 156"
+                  fill="none" stroke="#3D4A3F" stroke-width="1" stroke-linejoin="round" opacity=".35"/>
+            <circle class="ridge-dot" cx="242" cy="74" r="5" fill="#C4A57B"/>
+            <circle cx="242" cy="74" r="10" fill="none" stroke="#C4A57B" stroke-width="1" opacity=".45"/>
+            <text x="242" y="52" text-anchor="middle" fill="#14201A"
+                  font-family="Instrument Sans, sans-serif" font-size="10" font-weight="500" letter-spacing="2.4">THE CLIFFS</text>
+            <text x="242" y="200" text-anchor="middle" fill="#5F6A5C"
+                  font-family="Instrument Sans, sans-serif" font-size="9" letter-spacing="2">1,420 M</text>
+          </svg>
+        </div>
+
+        <div class="reveal" style="--i:1">
+          <table class="loc__table">
+            <caption class="sr-only">Travel times to The Cliffs</caption>
+            <tbody>
+              <tr><th scope="row">Nearest town</th><td>Chikmagalur, Karnataka — 1 hr</td></tr>
+              <tr><th scope="row">Nearest airport</th><td>Mangaluru (IXE) — 3 hr 30</td></tr>
+              <tr><th scope="row">From Bengaluru</th><td>Kempegowda (BLR) — 5 hr 30 by road</td></tr>
+              <tr><th scope="row">Railhead</th><td>Kadur — 1 hr 20</td></tr>
+              <tr><th scope="row">Elevation</th><td>1,420 m above sea level</td></tr>
+              <tr><th scope="row">Best months</th><td>October to March</td></tr>
+            </tbody>
+          </table>
+
+          <a class="btn btn--ghost loc__cta"
+             data-cta="location"
+             href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+            Check dates on Airbnb
+            <span class="btn__badge" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <p class="loc__note reveal">
+        The Western Ghats are older than the Himalaya, a UNESCO World Heritage site,
+        and one of only eight biodiversity hotspots on the planet. More than 300
+        globally threatened species live in this range, and a good number of them
+        live within earshot of the veranda.
+      </p>
+    </div>
+
+    <div class="bleed" style="margin-top: var(--s-8)">
+      <div class="frame reveal reveal-img" style="border-radius:0; aspect-ratio:21/9">
+        <img data-slot="location-ridges"
+             src="assets/images/location-ridges-1920.jpg"
+             sizes="100vw" width="1920" height="1080"
+             loading="lazy" decoding="async"
+             alt="Rolling forested hills and tea slopes stretching to the horizon in the Western Ghats.">
+        <!-- No .mist: this frame is already hazy blue and the overlay only
+             bleached it. The tea-slope band in §2 is the one photograph with
+             enough contrast to carry it. -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 7 · QUESTIONS — 1400 M ══════════ -->
+  <section class="section questions" id="questions" aria-labelledby="q-title">
+    <div class="container container--tight">
+      <div class="faq-wrap">
+
+        <div class="reveal">
+          <p class="label section-head__eyebrow">
+            <span class="altitude">1400 M</span> &nbsp;·&nbsp; Questions
+          </p>
+          <h2 id="q-title">Before you&nbsp;book.</h2>
+        </div>
+
+        <div class="reveal" style="--i:1">
+          <div class="faq">
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                How do we actually get there?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                Drive, or be driven. It is about five and a half hours from Bengaluru
+                and three and a half from Mangaluru airport. The last hour is a single
+                lane of switchbacks — fine in any car, slow in the rain. We will send
+                a pin and a written description of the final turning, which is easy to
+                miss.
+              </p>
+            </details>
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                When should we come?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                October to March is clear, cold at night, and the views go on for
+                fifty kilometres. June to September is the monsoon — far greener, far
+                louder, and the cloud sits in the room with you. Both are worth doing;
+                they are not the same holiday.
+              </p>
+            </details>
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                What is included?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                Breakfast, housekeeping, and someone on the property who can cook if
+                you would rather not. Estate walks and the waterfall track cost
+                nothing. The full current list lives on the Airbnb listing, which is
+                the version that stays up to date.
+              </p>
+            </details>
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                Is there a minimum stay?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                Two nights. One night is technically possible and genuinely not worth
+                it — you would spend most of it driving, and the whole point of the
+                place is the second morning.
+              </p>
+            </details>
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                What if our plans change?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                Cancellation runs through Airbnb under the policy shown on the
+                listing, so you are covered by their terms rather than ours. Check the
+                exact window on the booking page before you confirm.
+              </p>
+            </details>
+
+            <details class="faq__item">
+              <summary class="faq__q">
+                Children and dogs?
+                <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <p class="faq__a">
+                Children yes, and the Long Room is built for them. Dogs by arrangement.
+                Do bear in mind there is an unfenced drop at the end of the lawn — it
+                is a spectacular garden and not a childproof one.
+              </p>
+            </details>
+
+          </div>
+
+          <p class="faq__closer">
+            Still deciding?
+            <a class="link-inline" data-cta="faq"
+               href="https://www.airbnb.co.in/" target="_blank" rel="noopener">Read the full listing on Airbnb &rarr;</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 8 · BOOK — 1420 M ══════════ -->
+  <section class="section book" id="book" data-theme="dark" aria-labelledby="book-title">
+    <div class="book__bg">
+      <img data-slot="book-dusk"
+           src="assets/images/book-dusk-1920.jpg"
+           srcset="assets/images/book-dusk-1280.jpg 1280w,
+                   assets/images/book-dusk-1920.jpg 1920w"
+           sizes="100vw" width="1920" height="1446"
+           loading="lazy" decoding="async"
+           class="kb kb--slow"
+           alt="">
+    </div>
+    <div class="book__scrim"></div>
+
+    <div class="container">
+      <div class="book__inner reveal reveal--group">
+        <p class="label" style="color:var(--brass)">
+          <span class="altitude">1420 M</span> &nbsp;·&nbsp; The summit
+        </p>
+        <h2 class="book__title" id="book-title">The last light goes first from the&nbsp;valley.</h2>
+        <p class="book__lead">
+          Then it goes from the ridge, and then it is only you and whatever the
+          weather is doing.
+        </p>
+
+        <a class="btn btn--brass btn--lg book__cta"
+           data-cta="final"
+           href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+          Reserve on Airbnb
+          <span class="btn__badge" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <ul class="book__reassure label">
+          <li>Instant booking</li>
+          <li>Cancellation set by the host</li>
+          <li>Verified on Airbnb</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <p class="footer__brand">The Cliffs</p>
+      <a data-cta="footer" href="https://www.airbnb.co.in/" target="_blank" rel="noopener">View the listing on Airbnb &rarr;</a>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__note">
+        Photography on this site is representative and not of this property.
+        <a href="CREDITS.md">Credits and licences</a>.
+      </p>
+      <p>&copy; 2026 The Cliffs, Western Ghats</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Mobile sticky CTA — appears after the hero, hides over the final section -->
+<div class="mobile-bar" data-mobile-bar>
+  <a class="btn btn--brass btn--block"
+     data-cta="mobile-bar"
+     href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+    Check dates &middot; Book on Airbnb
+    <span class="btn__badge" aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+  </a>
+</div>
+
+
+<!-- Lightbox -->
+<div class="lightbox" data-lightbox role="dialog" aria-modal="true" aria-label="Photograph viewer" hidden>
+  <button class="lightbox__btn lightbox__close" type="button" data-lb-close aria-label="Close viewer">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke-linecap="round"/></svg>
+  </button>
+  <!-- No src attribute: an empty src="" resolves to the page URL and fires a
+       wasted request. The source is set when the viewer opens. -->
+  <img class="lightbox__img" data-lb-img alt="" decoding="async">
+  <div class="lightbox__bar">
+    <button class="lightbox__btn" type="button" data-lb-prev aria-label="Previous photograph">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="lightbox__caption" data-lb-caption></p>
+    <button class="lightbox__btn" type="button" data-lb-next aria-label="Next photograph">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="js/00-config.js" defer></script>
+<script src="js/01-images.js" defer></script>
+<script src="js/02-nav.js" defer></script>
+<script src="js/03-ascent.js" defer></script>
+<script src="js/04-reveal.js" defer></script>
+<script src="js/05-motion.js" defer></script>
+<script src="js/06-gallery.js" defer></script>
+<script src="js/07-cta.js" defer></script>
+<script src="js/08-hero-expand.js" defer></script>
+<script src="js/99-audit.js" defer></script>
+
+<!-- No aggregateRating, review or priceRange: there are no reviews and no
+     confirmed rate, and fabricated review markup is a Google policy violation.
+     No FAQPage either until the answers in §7 are confirmed real. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LodgingBusiness",
+      "@id": "https://the-cliffs.netlify.app/#lodging",
+      "name": "The Cliffs",
+      "description": "A three-suite luxury retreat at 1,420 metres in the Western Ghats, Karnataka, India.",
+      "url": "https://the-cliffs.netlify.app/",
+      "image": [
+        "https://the-cliffs.netlify.app/assets/images/hero-cloudline-1920.jpg",
+        "https://the-cliffs.netlify.app/assets/images/suite-canopy-1920.jpg",
+        "https://the-cliffs.netlify.app/assets/images/location-ridges-1920.jpg"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Karnataka",
+        "addressCountry": "IN"
+      },
+      "numberOfRooms": 3,
+      "petsAllowed": "By arrangement",
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "Valley-facing veranda", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Breakfast included", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Estate walking trails", "value": true }
+      ],
+      "sameAs": ["https://www.airbnb.co.in/"]
+    },
+    {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.airbnb.co.in/",
+        "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"]
+      },
+      "object": { "@id": "https://the-cliffs.netlify.app/#lodging" }
+    },
+    {
+      "@type": "WebSite",
+      "url": "https://the-cliffs.netlify.app/",
+      "name": "The Cliffs",
+      "publisher": { "@id": "https://the-cliffs.netlify.app/#lodging" }
+    }
+  ]
+}
+</script>
+
+</body>
+</html>

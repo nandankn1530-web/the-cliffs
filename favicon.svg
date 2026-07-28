@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Cliffs">
+  <rect width="64" height="64" rx="14" fill="#14201A"/>
+  <!-- A ridgeline and the drop, not a letter: the mark is the place. -->
+  <path d="M6 46 L20 34 L28 39 L40 22 L52 32 L58 27"
+        fill="none" stroke="#C4A57B" stroke-width="3.4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="40" cy="22" r="3.6" fill="#F4F1EA"/>
+</svg>

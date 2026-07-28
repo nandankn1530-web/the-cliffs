@@ -1,0 +1,116 @@
+/* ============================================================================
+   03-layout.css — containers, grids, bleed utilities
+   ========================================================================= */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Narrow measure for prose that has to stay readable */
+.container--tight { max-width: 1120px; }
+
+/* --- Full-bleed ------------------------------------------------------------
+   Escapes the container to the viewport edge without a wrapper. Uses margin
+   rather than 100vw so it never causes horizontal overflow when a scrollbar
+   is present — the classic `100vw` bug.                                      */
+
+.bleed {
+  margin-inline: calc(var(--gutter) * -1);
+  width: calc(100% + var(--gutter) * 2);
+}
+
+@media (min-width: 1620px) {
+  .bleed {
+    margin-inline: calc(50% - 50vw);
+    width: 100vw;
+  }
+}
+
+/* --- Section headers ------------------------------------------------------ */
+
+.section-head {
+  display: grid;
+  gap: var(--s-4);
+  max-width: 62ch;
+  margin-bottom: var(--s-8);
+}
+
+.section-head__eyebrow {
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* Small brass tick before each eyebrow — decoration only, carries no meaning,
+   which is what makes brass legal on cream here. */
+.section-head__eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--brass);
+  flex: none;
+}
+
+.section-head__lead {
+  font-size: var(--t-lead);
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+/* --- Editorial split: text column + image breaking the opposite edge ------- */
+
+.split {
+  display: grid;
+  gap: var(--s-7);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: 38fr 62fr;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .split--reverse { grid-template-columns: 62fr 38fr; }
+  .split--reverse > :first-child { order: 2; }
+}
+
+/* --- Generic two-column ---------------------------------------------------- */
+
+.cols-2 {
+  display: grid;
+  gap: var(--s-7);
+}
+
+@media (min-width: 900px) {
+  .cols-2 { grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); }
+}
+
+/* --- Media frames ----------------------------------------------------------
+   `overflow: hidden` plus the radius is what lets Ken Burns and parallax
+   children scale inside without ever exposing an edge.                       */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-img);
+  background: var(--moss);   /* holds the shape before the image decodes */
+}
+
+.frame > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.frame--tall   { aspect-ratio: 4 / 5; }
+.frame--square { aspect-ratio: 1 / 1; }
+.frame--wide   { aspect-ratio: 16 / 9; }
+.frame--band   { aspect-ratio: 21 / 9; }
+
+@media (max-width: 640px) {
+  .frame--band { aspect-ratio: 4 / 3; }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found — The Cliffs</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F4F1EA">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..500&family=Instrument+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/01-tokens.css">
+<link rel="stylesheet" href="css/02-base.css">
+<link rel="stylesheet" href="css/03-layout.css">
+<link rel="stylesheet" href="css/04-components.css">
+<style>
+  .lost {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .lost__inner { display: grid; justify-items: center; gap: var(--s-5); max-width: 44ch; }
+  .lost__actions { display: flex; flex-wrap: wrap; gap: var(--s-4); justify-content: center; margin-top: var(--s-3); }
+</style>
+</head>
+<body>
+<main class="lost">
+  <div class="container lost__inner">
+    <p class="label" style="color:var(--ink-2)">Error 404</p>
+    <h1 style="font-size:var(--t-h2)">This path doesn't go anywhere.</h1>
+    <p style="color:var(--ink-2)">
+      Not every track on a mountain leads somewhere. This one certainly doesn't.
+    </p>
+    <div class="lost__actions">
+      <a class="btn btn--ghost" href="/">
+        Back to The Cliffs
+        <span class="btn__badge" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+      <a class="btn btn--primary" data-cta="404" href="https://www.airbnb.co.in/" target="_blank" rel="noopener">
+        Check dates on Airbnb
+        <span class="btn__badge" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 8h10M8.5 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</main>
+<script src="js/00-config.js" defer></script>
+<script src="js/07-cta.js" defer></script>
+</body>
+</html>

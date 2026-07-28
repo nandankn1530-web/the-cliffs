@@ -1,0 +1,429 @@
+/* ============================================================================
+   06-motion.css — the Ascent, the mist, reveals, Ken Burns
+
+   Rules enforced throughout:
+     · Only `transform` and `opacity` are animated on scroll.
+     · No `background-attachment: fixed` (broken on Android, ignored on iOS).
+     · `will-change` is applied only while an element is animating and
+       removed in the reveal callback — a blanket `will-change` on eleven
+       gallery images creates eleven permanent compositor layers.
+   ========================================================================= */
+
+
+/* ═══ The Ascent — elevation spine ═════════════════════════════════════════
+   The signature. You climb through cloud to reach a clifftop Ghats property,
+   so the page climbs with you: a hairline down the left edge with an altitude
+   readout that rises from 840 m at the hero to 1,420 m at the booking CTA.
+
+   Sections are marked by altitude rather than 01/02/03 because a numbered
+   marker is decoration unless the order carries information. Altitude does —
+   the climb is the reason the view exists.                                   */
+
+.spine {
+  --ascent-progress: 0;   /* 03-ascent.js overwrites this on scroll */
+  position: fixed;
+  top: 0;
+  left: clamp(14px, 2.2vw, 34px);
+  bottom: 0;
+  z-index: var(--z-spine);
+  display: none;
+  align-items: center;
+  pointer-events: none;
+}
+
+@media (min-width: 1180px) {
+  .spine { display: flex; }
+}
+
+.spine__track {
+  position: absolute;
+  top: 18vh;
+  bottom: 18vh;
+  left: 50%;
+  width: 1px;
+  background: var(--hairline);
+  transform: translateX(-50%);
+}
+
+/* Filled portion tracks scroll progress. scaleY on a transform-origin of top
+   is compositor-only — no layout, no paint. */
+.spine__fill {
+  position: absolute;
+  inset: 0;
+  background: var(--brass);
+  transform-origin: top;
+  transform: scaleY(var(--ascent-progress, 0));
+}
+
+.spine__readout {
+  position: relative;
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--font-body);
+  font-size: var(--t-micro);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  background: var(--bg);
+  padding-block: var(--s-3);
+  transition: color var(--dur-mid) var(--ease-soft);
+}
+
+/* Over a dark section the readout must flip, or it vanishes */
+.spine.is-over-dark .spine__readout { color: var(--stone); background: var(--pine); }
+.spine.is-over-dark .spine__track { background: var(--hairline-dark); }
+
+/* The hero is a full-bleed photo card inset only a few pixels from the
+   viewport edge, so the spine would otherwise sit on top of the photograph.
+   Better to let it arrive: you start at the foot of the climb, and the
+   altimeter fades in once you actually begin ascending. */
+.spine { transition: opacity var(--dur-mid) var(--ease-soft); }
+.spine.is-hidden { opacity: 0; }
+
+/* Mobile keeps the idea, drops the chrome: altitude survives as an eyebrow */
+.altitude {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ═══ The mist ═════════════════════════════════════════════════════════════
+   Scoped to photographs, not the whole viewport — on a cream, text-driven
+   page a full-page mist has nothing to sit on. Three soft radial gradients
+   drift across each image and thin as it passes through the viewport.
+
+   Pure CSS, no images, no JS. Transform and opacity only.                    */
+
+.mist {
+  position: absolute;
+  inset: -20%;
+  z-index: var(--z-mist);
+  pointer-events: none;
+  opacity: .24;
+  mix-blend-mode: soft-light;
+  background:
+    radial-gradient(38% 28% at 22% 34%, rgba(244,241,234,.95), transparent 70%),
+    radial-gradient(46% 30% at 68% 58%, rgba(244,241,234,.75), transparent 72%),
+    radial-gradient(52% 24% at 44% 82%, rgba(244,241,234,.6),  transparent 74%);
+  filter: blur(14px);
+  animation: mist-drift 46s ease-in-out infinite alternate;
+}
+
+@keyframes mist-drift {
+  from { transform: translate3d(-3%, 1%, 0) scale(1.04); }
+  to   { transform: translate3d(4%, -2%, 0) scale(1.12); }
+}
+
+/* Thin the mist as the photo rises through the viewport. Scroll-driven
+   animations run off the main thread, so this is free where supported.
+   Firefox is still behind a flag as of 2026 — there it simply keeps the
+   static mist above, which looks fine. No JS fallback: a still photograph
+   is beautiful, a scroll-handler parallax under image decode is not. */
+@supports (animation-timeline: view()) {
+  .mist {
+    animation: mist-drift 46s ease-in-out infinite alternate,
+               mist-clear linear both;
+    animation-timeline: auto, view();
+    animation-range: normal, entry 10% cover 60%;
+  }
+  @keyframes mist-clear {
+    from { opacity: .34; }
+    to   { opacity: 0; }
+  }
+}
+
+
+/* ═══ Ken Burns ════════════════════════════════════════════════════════════
+   Slow enough to be felt rather than seen. Off-centre origin so the drift
+   reads as a camera move, not a zoom. The parent .frame clips it.           */
+
+.kb { animation: ken-burns 30s ease-in-out infinite alternate; }
+
+@keyframes ken-burns {
+  from { transform: scale(1.04) translate3d(0, 0, 0); }
+  to   { transform: scale(1.11) translate3d(-1.5%, -1%, 0); }
+}
+
+.kb--slow { animation-duration: 42s; }
+
+
+/* ═══ Scroll reveals ═══════════════════════════════════════════════════════
+   Hiding is scoped to `.js`, set by an inline script in <head>. If the
+   scripts fail to load, `.js` is still present but 04-reveal.js never runs —
+   so `.no-reveal-support` is NOT the safety net. The real net is the
+   reduced-motion block in 02-base.css plus the fact that IntersectionObserver
+   is universally supported; 04-reveal.js also force-reveals everything if the
+   API is missing.                                                            */
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out),
+    transform var(--dur-reveal) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Image settle — pairs with the reveal on section media.
+   NOTE: .reveal-img needs .is-in, which 04-reveal.js only adds to .reveal.
+   An element with reveal-img but no reveal sits at scale(1.05) forever. */
+.js .reveal-img img { transform: scale(1.05); transition: transform 1.4s var(--ease-out); }
+.js .reveal-img.is-in img { transform: scale(1); }
+
+
+/* ═══ Reveal variants ══════════════════════════════════════════════════════
+   One reveal used 21 times reads as no reveal at all — the eye stops noticing
+   a motion it has already seen twenty times. Distance should also scale with
+   the element: 24px on a caption looks sloppy, 24px on a full-bleed image
+   looks timid.
+
+   Direction carries meaning too. An element that breaks the right edge of the
+   layout should arrive from the right, not from below.                       */
+
+.js .reveal--near  { transform: translateY(12px); }
+.js .reveal--far   { transform: translateY(40px); }
+.js .reveal--left  { transform: translateX(-44px); }
+.js .reveal--right { transform: translateX(44px); }
+.js .reveal--slow  { transition-duration: 1.25s; }
+
+/* Observation hook only: the element itself does not move, its children do.
+   Lets one observer entry drive a whole cascade instead of six. */
+.js .reveal--group {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+
+/* ═══ Suites cascade ═══════════════════════════════════════════════════════
+   Seven reveal elements were arriving simultaneously as a single lump. Now
+   each row deals itself out: image, rule, name, meta, amenities, then the ask.
+
+   The image enters from its own side — left-hand rows from the left, flipped
+   rows from the right — so the motion agrees with the L/R/L layout rhythm
+   instead of cutting across it.                                              */
+
+.js .suite__media,
+.js .suite__rule,
+.js .suite__body h3,
+.js .suite__meta,
+.js .suite__amenities li,
+.js .suite__cta {
+  opacity: 0;
+  transition: opacity .85s var(--ease-out), transform .85s var(--ease-out);
+}
+
+.js .suite__media                 { transform: translateX(-44px); }
+.js .suite--flip .suite__media    { transform: translateX(44px); }
+.js .suite__rule                  { transform: scaleX(0); transform-origin: left; }
+.js .suite__body h3,
+.js .suite__meta,
+.js .suite__amenities li,
+.js .suite__cta                   { transform: translateY(18px); }
+
+.js .suite.is-in .suite__media,
+.js .suite.is-in .suite__rule,
+.js .suite.is-in .suite__body h3,
+.js .suite.is-in .suite__meta,
+.js .suite.is-in .suite__amenities li,
+.js .suite.is-in .suite__cta {
+  opacity: 1;
+  transform: none;
+}
+
+.js .suite.is-in .suite__media                    { transition-delay: 0ms; }
+.js .suite.is-in .suite__rule                     { transition-delay: 200ms; }
+.js .suite.is-in .suite__body h3                  { transition-delay: 280ms; }
+.js .suite.is-in .suite__meta                     { transition-delay: 370ms; }
+.js .suite.is-in .suite__amenities li:nth-child(1){ transition-delay: 460ms; }
+.js .suite.is-in .suite__amenities li:nth-child(2){ transition-delay: 530ms; }
+.js .suite.is-in .suite__amenities li:nth-child(3){ transition-delay: 600ms; }
+.js .suite.is-in .suite__amenities li:nth-child(4){ transition-delay: 670ms; }
+/* The ask lands after a clear beat, not as the tail of a list. */
+.js .suite.is-in .suite__cta                      { transition-delay: 820ms; }
+
+
+/* ═══ Book: the pause is the effect ════════════════════════════════════════
+   The final section had no reveal at all. It should be the quietest and
+   heaviest moment on the page, so everything arrives slowly and the button
+   arrives alone, after a deliberate gap. That silence is what makes it read
+   as a decision rather than one more element.                                */
+
+.js .book__inner > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1.1s var(--ease-out), transform 1.1s var(--ease-out);
+}
+.js .book__inner.is-in > * { opacity: 1; transform: none; }
+
+.js .book__inner.is-in > :nth-child(1) { transition-delay:   0ms; }
+.js .book__inner.is-in > :nth-child(2) { transition-delay: 140ms; }
+.js .book__inner.is-in > :nth-child(3) { transition-delay: 280ms; }
+.js .book__inner.is-in > :nth-child(4) { transition-delay: 700ms; }  /* the beat */
+.js .book__inner.is-in > :nth-child(5) { transition-delay: 900ms; }
+
+/* Sheen across the final button on hover. background-position is normally a
+   bad thing to animate, but this is hover-triggered and not scroll-linked, so
+   it never competes with the compositor during a scroll. */
+.book__cta {
+  background-image: linear-gradient(100deg,
+    transparent 32%,
+    rgba(255, 255, 255, .42) 48%,
+    transparent 64%);
+  background-size: 280% 100%;
+  background-position: 130% 0;
+  background-repeat: no-repeat;
+  transition:
+    background-position 1.1s var(--ease-out),
+    background-color var(--dur-fast) var(--ease-soft),
+    transform var(--dur-fast) var(--ease-soft);
+}
+
+.book__cta:hover,
+.book__cta:focus-visible { background-position: -30% 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .book__cta { background-image: none; }
+}
+
+
+/* ═══ Hero headline ════════════════════════════════════════════════════════
+   Letter-spacing settling on load. Only letter-spacing.
+
+   This originally also animated opacity and transform. Both had to go: a
+   CSS animation with `forwards` wins over the declared value, so it pinned
+   the headline's opacity and blocked the scroll-driven fade in
+   05-sections.css entirely — the title stayed at ~0.5 no matter how far you
+   scrolled. Transform would have fought the horizontal split the same way.
+
+   The entrance those properties provided is redundant now anyway: the hero
+   already opens with the reveal. One entrance is enough.                     */
+
+.js .hero__title {
+  letter-spacing: 0.04em;
+  animation: hero-settle 1.15s var(--ease-out) .15s forwards;
+}
+
+@keyframes hero-settle {
+  to { letter-spacing: var(--ls-display); }
+}
+
+
+/* ═══ Experiences rail ═════════════════════════════════════════════════════
+   Base is a plain native scroll-snap carousel that works everywhere. Where
+   scroll-driven animations exist, the section pins and the rail translates
+   horizontally as the page scrolls vertically.                               */
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .exp__rail-wrap {
+      height: 320vh;
+    }
+    .exp__pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .exp__pin .rail {
+      overflow: visible;
+      animation: rail-slide linear both;
+      animation-timeline: view(block);
+      animation-range: contain 0% contain 100%;
+    }
+    @keyframes rail-slide {
+      from { transform: translateX(4vw); }
+      to   { transform: translateX(calc(-100% + 88vw)); }
+    }
+  }
+}
+
+
+/* ═══ Gallery reveal ═══════════════════════════════════════════════════════
+   The comment here used to claim a diagonal wave, but --i was hard-coded 0–11
+   in source order, which sweeps left-to-right — and the <li>s were never
+   given .reveal, so none of it fired at all.
+
+   --i is now computed in 06-gallery.js from each cell's actual rendered
+   position, so the wave stays diagonal across the 2-, 3- and 4-column
+   breakpoints instead of being right for only one of them.                   */
+
+.gallery__item { --i: 0; }
+
+.js .gallery__item {
+  opacity: 0;
+  transform: translateY(26px) scale(.985);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out),
+    transform var(--dur-reveal) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.js .gallery.is-in .gallery__item {
+  opacity: 1;
+  transform: none;
+}
+
+/* The "+ N more on Airbnb" card is the section's CTA, so it lands last
+   whatever the wave is doing. */
+.js .gallery.is-in .gallery__item--terminal { transition-delay: 780ms; }
+
+
+/* ═══ Filter transition ════════════════════════════════════════════════════
+   Exit shrinks slightly as it fades, which reads as removal; a plain opacity
+   drop reads as a rendering glitch. Re-entry replays the wave.               */
+
+.js .gallery.is-in .gallery__item.is-filtering {
+  opacity: 0;
+  transform: translateY(8px) scale(.96);
+  transition-duration: var(--dur-mid);
+  transition-delay: 0ms;
+}
+
+
+/* ═══ Scroll-linked parallax ═══════════════════════════════════════════════
+   The reveals are binary — once a section has arrived, nothing moves again,
+   which is most of why the page reads static between them. These run off the
+   main thread where supported and are simply absent where not.
+
+   Kept small on purpose: past about 10% displacement it stops reading as
+   depth and starts reading as a bug.                                         */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* The pinned band holds still for 120vh — the worst dead spot on the
+       page. Drift replaces its Ken Burns rather than fighting it for the
+       transform property. */
+    .place__band-sticky .frame img {
+      animation: drift-y linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+
+    /* Suite images have no Ken Burns, so transform is free here. */
+    .suite__media .frame img {
+      animation: drift-soft linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+  }
+}
+
+@keyframes drift-y {
+  from { transform: translateY(-5%) scale(1.12); }
+  to   { transform: translateY(5%)  scale(1.12); }
+}
+
+@keyframes drift-soft {
+  from { transform: translateY(-3.5%) scale(1.08); }
+  to   { transform: translateY(3.5%)  scale(1.08); }
+}

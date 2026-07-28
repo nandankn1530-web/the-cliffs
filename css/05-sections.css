@@ -1,0 +1,399 @@
+/* ============================================================================
+   05-sections.css — the eight sections
+   ========================================================================= */
+
+/* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
+   One rounded card on a pine ground: photograph, scrim, copy anchored
+   bottom-left, booking bar straddling the lower edge.
+
+   Text now sits ON the photograph, so contrast is no longer free. The scrim
+   in --scrim holds cream above 7:1 against the lightest pixels this image
+   actually contains — verified by sampling, not assumed.                    */
+
+.hero {
+  --p: 1;                /* scroll progress 0 → 1; JS overwrites. 1 = open,
+                            so no-JS and reduced-motion land fully revealed. */
+  background: var(--pine);
+  padding-top: 0;
+  padding-bottom: clamp(3rem, 7vh, 6rem);
+  padding-inline: 0;
+}
+
+/* Scroll distance for the reveal. Only when JS is running — otherwise there is
+   nothing to animate and 220vh of pinned hero would just be dead scroll. */
+.hero__track { position: relative; }
+.js .hero__track { height: 240vh; }
+
+.hero__stage {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+}
+
+.js .hero__stage { position: sticky; top: 0; }
+
+/* Background landscape — recedes as the property opens over it */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -3;
+  opacity: calc(1 - var(--p) * 0.55);
+  transform: scale(calc(1 + var(--p) * 0.06));
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  z-index: -2;
+  opacity: calc(1 - var(--p) * 0.35);
+}
+
+/* ── The reveal ────────────────────────────────────────────────────────────
+   Starts as a small portrait card sitting in the landscape and opens to a
+   wide letterbox. Width and height are interpolated independently, which is
+   what makes it read as "opening" rather than merely scaling.               */
+
+.hero__reveal {
+  --w-start: 17rem;
+  --w-span:  62rem;
+  --h-start: 23rem;
+  --h-span:  9rem;
+
+  position: relative;
+  z-index: -1;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-hero);
+  width:  min(92vw, calc(var(--w-start) + var(--p) * var(--w-span)));
+  height: min(84svh, calc(var(--h-start) + var(--p) * var(--h-span)));
+  box-shadow: 0 30px 80px rgba(10, 46, 38, .45);
+}
+
+.hero__reveal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark early, clear once open — the photograph earns its clarity */
+.hero__reveal-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 46, 38, .78);
+  opacity: calc(1 - var(--p));
+}
+
+@media (max-width: 768px) {
+  .hero__reveal {
+    --w-start: 13rem;
+    --w-span:  30rem;
+    --h-start: 19rem;
+    --h-span:  7rem;
+  }
+}
+
+/* ── Split title ───────────────────────────────────────────────────────────
+   The two halves part as the image opens, then fade so they never fight the
+   photograph. Still one <h1> with continuous text for assistive tech.       */
+
+.hero__title {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  text-align: center;
+  color: var(--cream);
+  pointer-events: none;
+  text-shadow: 0 2px 40px rgba(10, 46, 38, .5);
+  /* Hold full strength through the first third, then clear completely by 0.8.
+     Letting it linger to p=1 leaves it lying across the photograph and clipped
+     at both edges, which reads as a bug rather than a transition. */
+  opacity: clamp(0, calc((0.8 - var(--p)) / 0.45), 1);
+}
+
+.hero__word { display: block; }
+.hero__word--in  { transform: translateX(calc(var(--p) * -26vw)); }
+.hero__word--out { transform: translateX(calc(var(--p) *  26vw)); color: var(--sand); font-style: italic; }
+
+.hero__cue {
+  position: absolute;
+  z-index: 1;
+  bottom: clamp(1.5rem, 5vh, 3rem);
+  color: rgba(244, 241, 234, .7);
+  opacity: clamp(0, calc(1 - var(--p) * 2.4), 1);
+  pointer-events: none;
+}
+
+/* ── Revealed content ──────────────────────────────────────────────────────
+   Arrives only once the image has finished opening.                         */
+
+.hero__after {
+  position: relative;
+  padding-inline: clamp(0.75rem, 1.6vw, 1.5rem);
+  opacity: clamp(0, calc((var(--p) - 0.72) * 4), 1);
+  transform: translateY(calc((1 - clamp(0, calc((var(--p) - 0.72) * 4), 1)) * 1.5rem));
+}
+
+.hero__inner {
+  padding: var(--gutter) var(--gutter) var(--s-5);
+  max-width: 60rem;
+}
+
+/* Reduced motion: no reveal at all. The track collapses, the hero renders in
+   its open state, and nothing moves. Same destination, no journey. */
+@media (prefers-reduced-motion: reduce) {
+  .js .hero__track { height: auto; }
+  .js .hero__stage { position: relative; }
+  .hero { --p: 1 !important; }
+  .hero__cue { display: none; }
+}
+
+/* The eyebrow sits on pine below the stage now, so brass would be legal —
+   but keeping it cream matches the rest of the section headers. */
+.hero__eyebrow {
+  color: rgba(244, 241, 234, .86);
+  margin-bottom: var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.hero__eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--brass);
+  flex: none;
+}
+
+.hero__lead {
+  font-size: var(--t-lead);
+  color: rgba(244, 241, 234, .84);
+  max-width: 46ch;
+  margin-top: var(--s-5);
+}
+
+.hero__inner .trust-pill { margin-top: var(--s-6); }
+
+
+/* ═══ 2 · The Place ════════════════════════════════════════════════════════ */
+
+/* The band crops a 3:2 photograph to a wide letterbox. Centred, that lands on
+   the white mist band across the middle of this image and the result reads as
+   a broken load. Biasing down puts the green tea terraces in frame. */
+.place__band-img { object-position: 50% 78%; }
+
+.place__prose {
+  display: grid;
+  gap: var(--s-5);
+  max-width: 48ch;
+}
+
+.place__prose p { font-size: var(--t-lead); color: var(--ink-2); }
+
+/* Drop cap on the opening paragraph.
+
+   Targeted by class, not `p:first-of-type` — the first <p> in this block is
+   the altitude eyebrow, so :first-of-type silently applied the drop cap to
+   the wrong element and rendered nothing.
+
+   `initial-letter` is supported in Safari and Chrome 110+; the float fallback
+   below covers everything else and looks nearly identical. */
+.place__lede::first-letter {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 96;
+  font-size: 3.6em;
+  line-height: 0.82;
+  float: left;
+  padding-right: 0.08em;
+  padding-top: 0.06em;
+  color: var(--forest);
+}
+
+@supports (initial-letter: 3) {
+  .place__lede::first-letter {
+    initial-letter: 3;
+    float: none;
+    font-size: inherit;
+    padding: 0 0.08em 0 0;
+  }
+}
+
+.place__media .frame { aspect-ratio: 3 / 4; }
+
+/* Pinned band: holds still for ~120vh while the page scrolls past it */
+.place__band {
+  margin-top: clamp(3rem, 8vh, 6rem);
+  height: 190vh;
+}
+
+.place__band-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.place__band-sticky .frame {
+  height: 100%;
+  border-radius: 0;
+  aspect-ratio: auto;
+}
+
+@media (max-width: 720px) {
+  .place__band { height: auto; }
+  .place__band-sticky { position: static; height: auto; }
+  .place__band-sticky .frame { aspect-ratio: 4 / 3; }
+}
+
+.place__onward { margin-top: var(--s-6); }
+
+
+/* ═══ 3 · The Suites ═══════════════════════════════════════════════════════ */
+
+.suites__list { margin-top: var(--s-8); }
+.suite__media .frame { aspect-ratio: 3 / 2; }
+
+
+/* ═══ 4 · Experiences ══════════════════════════════════════════════════════ */
+
+.exp__rail-wrap { margin-top: var(--s-7); }
+.exp__close { margin-top: var(--s-7); font-size: var(--t-lead); color: var(--ink-2); }
+
+
+/* ═══ 5 · Gallery ══════════════════════════════════════════════════════════ */
+
+.gallery__status { color: var(--stone); font-size: var(--t-small); margin-top: var(--s-5); }
+
+
+/* ═══ 6 · Location ═════════════════════════════════════════════════════════ */
+
+.loc__map {
+  border: 1px solid var(--rule);
+  border-radius: var(--r-img);
+  padding: var(--s-6);
+  background: var(--cream-lift);
+}
+
+.loc__map svg { width: 100%; height: auto; }
+
+.loc__table { width: 100%; border-collapse: collapse; text-align: left; }
+
+.loc__table th,
+.loc__table td {
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: baseline;
+}
+
+.loc__table th {
+  font-weight: 500;
+  font-size: var(--t-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ink-2);
+  width: 42%;
+  padding-right: var(--s-4);
+}
+
+.loc__table td { font-size: var(--t-small); }
+
+.loc__note {
+  margin-top: var(--s-7);
+  max-width: var(--measure);
+  color: var(--ink-2);
+}
+
+.loc__cta { margin-top: var(--s-6); }
+
+
+/* ═══ 7 · Questions ════════════════════════════════════════════════════════ */
+
+.faq-wrap { display: grid; gap: var(--s-7); }
+
+@media (min-width: 900px) {
+  .faq-wrap { grid-template-columns: 34fr 66fr; gap: clamp(2.5rem, 6vw, 6rem); }
+}
+
+.faq__closer { margin-top: var(--s-6); color: var(--ink-2); }
+
+
+/* ═══ 8 · Book ═════════════════════════════════════════════════════════════
+   The only place on the site where text sits over a photograph, so the only
+   place needing a scrim. Measured against the lightest pixels under the
+   headline, not the average — see the verification notes in README.         */
+
+.book {
+  position: relative;
+  isolation: isolate;
+  min-height: 88vh;
+  display: grid;
+  place-items: center;
+  padding-block: clamp(6rem, 18vh, 12rem);
+  overflow: hidden;
+}
+
+.book__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.book__bg img { width: 100%; height: 100%; object-fit: cover; }
+
+.book__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgba(20, 32, 26, .90) 0%,
+    rgba(20, 32, 26, .74) 42%,
+    rgba(20, 32, 26, .58) 100%
+  );
+}
+
+.book__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-5);
+  text-align: center;
+  max-width: 46ch;
+}
+
+.book__title { color: var(--cream); }
+.book__lead { color: var(--stone); font-size: var(--t-lead); }
+.book__cta { margin-top: var(--s-3); }
+
+.book__reassure {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2) var(--s-4);
+  margin-top: var(--s-4);
+  color: var(--stone);
+  font-size: var(--t-label);
+  letter-spacing: 0.04em;
+}
+
+.book__reassure li { display: flex; align-items: center; gap: var(--s-4); }
+
+/* Trailing separators, not leading ones. With a leading dot, an item that
+   wraps to a second line starts with what looks like a bullet. */
+.book__reassure li:not(:last-child)::after {
+  content: '';
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--brass);
+}

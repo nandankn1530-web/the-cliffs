@@ -1,0 +1,31 @@
+# OS / OneDrive
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store
+*.lnk
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local tool settings (machine-specific, not project config)
+.claude/settings.local.json
+
+# Scratch harnesses — screenshot/probe copies of index.html.
+# These are throwaway; committing one would ship a broken duplicate page.
+_shot.html
+_probe.html
+_test.html
+_diag.html
+.writetest
+
+# Build output, if a bundler is ever added
+node_modules/
+dist/
+.cache/
+
+# Unused source PNG kept locally, not tracked
+assets/images/image.png

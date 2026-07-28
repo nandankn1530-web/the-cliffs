@@ -1,0 +1,14 @@
+# Normalise line endings. Without this, files authored on Windows land in the
+# repo as CRLF and show up as "modified" for anyone on macOS or Linux — and in
+# CI diffs — even when nothing changed.
+* text=auto eol=lf
+
+# Binary: never touch these
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.webp binary
+*.avif binary
+*.woff  binary
+*.woff2 binary
+*.ico  binary

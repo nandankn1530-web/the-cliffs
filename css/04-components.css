@@ -1,0 +1,713 @@
+/* ============================================================================
+   04-components.css — nav, buttons, cards, gallery, accordion, lightbox, footer
+   ========================================================================= */
+
+/* ═══ Pill buttons ═════════════════════════════════════════════════════════
+   Three recipes, all forced by the contrast rules in 01-tokens.css:
+
+     .btn--primary  forest fill + cream label   14.88:1  — the cream sections
+     .btn--brass    brass fill  + forest label   7.21:1  — the dark sections
+     .btn--ghost    outline only                          — secondary asks
+
+   There is no brass-filled button on cream anywhere: 2.07:1 is unreadable.  */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: 0.4375rem 0.4375rem 0.4375rem var(--s-5);
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: background-color var(--dur-mid) var(--ease-soft),
+              color var(--dur-mid) var(--ease-soft),
+              border-color var(--dur-mid) var(--ease-soft),
+              transform var(--dur-mid) var(--ease-out);
+}
+
+.btn__badge {
+  display: grid;
+  place-items: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 50%;
+  flex: none;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.btn__badge svg { width: 0.875rem; height: 0.875rem; }
+
+.btn:hover { transform: translateY(-2px); }
+.btn:hover .btn__badge { transform: translateX(3px); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  background: var(--forest);
+  color: var(--cream);
+}
+.btn--primary .btn__badge { background: var(--brass); color: var(--forest); }
+.btn--primary:hover { background: var(--forest-lift); }
+
+.btn--brass {
+  background: var(--brass);
+  color: var(--forest);
+}
+.btn--brass .btn__badge { background: var(--forest); color: var(--brass); }
+.btn--brass:hover { background: var(--brass-lift); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule);
+}
+.btn--ghost .btn__badge { border: 1px solid var(--rule); }
+.btn--ghost:hover { border-color: var(--ink); }
+
+.btn--lg {
+  font-size: 1.0625rem;
+  padding: 0.5rem 0.5rem 0.5rem var(--s-6);
+  gap: var(--s-5);
+}
+.btn--lg .btn__badge { width: 2.75rem; height: 2.75rem; }
+.btn--lg .btn__badge svg { width: 1.0625rem; height: 1.0625rem; }
+
+.btn--sm { font-size: var(--t-label); padding: 0.3125rem 0.3125rem 0.3125rem var(--s-4); }
+.btn--sm .btn__badge { width: 1.75rem; height: 1.75rem; }
+.btn--sm .btn__badge svg { width: 0.75rem; height: 0.75rem; }
+
+.btn--block { display: flex; width: 100%; justify-content: space-between; }
+
+/* Inline text link with a brass underline that grows on hover */
+.link-inline {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid var(--brass);
+  padding-bottom: 1px;
+  transition: border-color var(--dur-mid) var(--ease-soft);
+}
+.link-inline:hover { border-bottom-width: 2px; }
+
+
+/* ═══ Trust pill ═══════════════════════════════════════════════════════════
+   Occupies the slot where the reference had a fabricated star rating. This
+   says something true instead — see CONTENT.md "deliberately absent".       */
+
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-5);
+  background: var(--cream-lift);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-pill);
+  font-size: var(--t-small);
+  color: var(--moss);
+  box-shadow: 0 1px 2px rgba(20, 32, 26, .04), 0 8px 24px rgba(20, 32, 26, .05);
+}
+
+.trust-pill__mark {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--brass);
+  flex: none;
+}
+.trust-pill__mark svg { width: 0.8125rem; height: 0.8125rem; }
+
+/* Over the hero photograph an opaque cream pill reads as a sticker. Glass
+   keeps the photo alive behind it while still carrying the text. */
+.trust-pill--glass {
+  background: var(--glass);
+  border-color: var(--glass-brd);
+  color: rgba(244, 241, 234, .92);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: none;
+}
+
+.trust-pill--glass .trust-pill__mark {
+  background: var(--brass);
+  color: var(--pine);
+}
+
+
+/* ═══ Booking bar ═══════════════════════════════════════════════════════════
+   The reference's search bar is decorative. This one is real: the values are
+   appended to the Airbnb URL as check_in / check_out / adults, so the listing
+   opens pre-filled. See js/07-cta.js.
+
+   It is a role="group", not a <form> — there is nothing to submit to, and the
+   action is a genuine link, so it keeps working with JS disabled.           */
+
+.checkbar {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0 var(--gutter) var(--gutter);
+  padding: var(--s-3);
+  border-radius: var(--r-card);
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+@media (min-width: 880px) {
+  .checkbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+    align-items: center;
+    gap: var(--s-5);
+    border-radius: var(--r-pill);
+    padding: var(--s-3) var(--s-3) var(--s-3) var(--s-6);
+  }
+}
+
+.checkbar__field {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  min-width: 0;
+}
+
+@media (min-width: 880px) {
+  .checkbar__field { padding: 0; }
+  .checkbar__field + .checkbar__field {
+    border-left: 1px solid var(--glass-brd);
+    padding-left: var(--s-5);
+  }
+}
+
+.checkbar__label {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--t-micro);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.checkbar__label svg { width: 0.875rem; height: 0.875rem; flex: none; }
+
+.checkbar__input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  padding: 2px 0;
+  /* Without this Chrome paints the native date text and picker near-black */
+  color-scheme: dark;
+}
+
+.checkbar__input option { color: var(--forest); }
+
+.checkbar__input::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(.55);
+  cursor: pointer;
+}
+.checkbar__input::-webkit-calendar-picker-indicator:hover { filter: invert(1) opacity(.95); }
+
+.checkbar__go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-3) var(--s-3) var(--s-6);
+  border-radius: var(--r-pill);
+  background: var(--brass);
+  color: var(--forest);
+  font-size: var(--t-small);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-soft),
+              transform var(--dur-fast) var(--ease-soft);
+}
+
+.checkbar__go:hover { background: var(--brass-lift); transform: translateY(-2px); }
+.checkbar__go:active { transform: translateY(0); }
+
+.checkbar__go-badge {
+  display: grid;
+  place-items: center;
+  width: 2rem; height: 2rem;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--brass);
+  flex: none;
+  transition: transform var(--dur-fast) var(--ease-soft);
+}
+.checkbar__go-badge svg { width: 0.875rem; height: 0.875rem; }
+.checkbar__go:hover .checkbar__go-badge { transform: translateX(3px); }
+
+
+/* ═══ Nav ══════════════════════════════════════════════════════════════════ */
+
+/* A glass pill floating inside the hero card's top edge. It stays outside the
+   card in the DOM because `position: sticky` cannot survive an
+   `overflow: hidden` ancestor — the card clips it the moment you scroll.
+   Matching the card's inline padding is what makes it read as "inside".     */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  padding-inline: clamp(0.75rem, 1.6vw, 1.5rem);
+  padding-top: clamp(0.75rem, 1.6vw, 1.5rem);
+  /* Pull the hero card up underneath the nav */
+  margin-bottom: calc(-1 * (var(--nav-h) + clamp(0.75rem, 1.6vw, 1.5rem)));
+  --nav-h: 4.25rem;
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  min-height: var(--nav-h);
+  padding-inline: var(--s-5);
+  padding-block: var(--s-2);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  color: var(--cream);
+  transition: background-color var(--dur-mid) var(--ease-soft),
+              border-color var(--dur-mid) var(--ease-soft);
+}
+
+/* Once the nav leaves the hero the photo is gone from behind it, so the
+   translucent fill has nothing to sit on — it goes solid pine instead. */
+.nav.is-stuck .nav__inner {
+  background: var(--nav-stuck);
+  border-color: transparent;
+  box-shadow: 0 8px 30px rgba(10, 46, 38, .28);
+}
+
+.nav__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 40;
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  flex: none;
+}
+
+.nav__brand small {
+  font-family: var(--font-body);
+  font-size: var(--t-micro);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, .72);
+}
+
+.nav__links {
+  display: none;
+  gap: var(--s-6);
+  align-items: center;
+}
+
+@media (min-width: 1024px) { .nav__links { display: flex; } }
+
+.nav__link {
+  font-size: var(--t-small);
+  text-decoration: none;
+  color: rgba(244, 241, 234, .78);
+  padding-block: var(--s-2);
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-soft);
+}
+
+.nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--brass);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.nav__link:hover { color: var(--cream); }
+.nav__link:hover::after,
+.nav__link[aria-current="true"]::after { transform: scaleX(1); }
+.nav__link[aria-current="true"] { color: var(--cream); }
+
+/* The nav CTA is redundant on small screens — the sticky bottom bar covers it */
+.nav__cta { display: none; }
+@media (min-width: 720px) { .nav__cta { display: inline-flex; } }
+
+
+/* ═══ Suite rows ═══════════════════════════════════════════════════════════
+   Full-width editorial rows, not a card grid. Cards would flatten a luxury
+   property into a search-results listing — exactly what this page is trying
+   to make the visitor forget until they reach Airbnb.                        */
+
+.suite { display: grid; gap: var(--s-6); align-items: center; }
+
+@media (min-width: 900px) {
+  .suite {
+    grid-template-columns: 58fr 42fr;
+    gap: clamp(2.5rem, 5vw, 5rem);
+  }
+  .suite--flip > .suite__media { order: 2; }
+}
+
+.suite + .suite { margin-top: clamp(4rem, 9vh, 7rem); }
+
+.suite__body { display: grid; gap: var(--s-4); align-content: center; }
+
+.suite__rule {
+  width: 48px;
+  height: 1px;
+  background: var(--brass);
+}
+
+.suite__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  color: var(--ink-2);
+}
+
+.suite__amenities {
+  display: grid;
+  gap: var(--s-2);
+  margin-block: var(--s-2);
+}
+
+.suite__amenities li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
+
+.suite__amenities li::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--brass);
+  flex: none;
+  transform: translateY(-2px);
+}
+
+.suite__cta { margin-top: var(--s-3); justify-self: start; }
+
+
+/* ═══ Experiences rail ═════════════════════════════════════════════════════ */
+
+.rail {
+  display: flex;
+  gap: var(--s-5);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: var(--s-4);
+}
+.rail::-webkit-scrollbar { display: none; }
+
+.rail__panel {
+  flex: 0 0 min(78vw, 460px);
+  scroll-snap-align: center;
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* 3:2 matches most of the source photography. The tea panorama is 2.29:1 and
+   still crops, but far less than a 4:3 frame would take off it. */
+.rail__panel .frame { aspect-ratio: 3 / 2; }
+
+.rail__index {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.rail__title { font-size: var(--t-h3); }
+
+.rail__text { color: var(--ink-2); font-size: var(--t-small); }
+
+
+/* ═══ Gallery ══════════════════════════════════════════════════════════════ */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-bottom: var(--s-7);
+}
+
+.filter {
+  padding: 0.5rem var(--s-5);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font-size: var(--t-small);
+  font-weight: 500;
+  transition: background-color var(--dur-fast) var(--ease-soft),
+              color var(--dur-fast) var(--ease-soft),
+              border-color var(--dur-fast) var(--ease-soft);
+}
+
+.filter:hover { border-color: var(--ink); }
+
+.filter[aria-pressed="true"] {
+  background: var(--brass);
+  color: var(--forest);
+  border-color: var(--brass);
+}
+
+/* The mosaic is driven by row spans over a fixed row height, not by a
+   per-cell aspect-ratio. With ratios, a cell spanning two rows sizes itself
+   to its own proportions and leaves a gap under it; spans plus a filling
+   child means every cell resolves to exactly its track. `dense` backfills
+   the holes the spanning cells would otherwise leave. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: clamp(104px, 15vw, 172px);
+  gap: var(--s-4);
+  grid-auto-flow: row dense;
+}
+
+@media (min-width: 760px)  { .gallery { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1180px) { .gallery { grid-template-columns: repeat(4, 1fr); } }
+
+.gallery__item { margin: 0; grid-row: span 2; }
+.gallery__item[hidden] { display: none; }
+
+/* The mosaic is deliberately uneven — a perfect grid reads as a stock gallery,
+   irregularity reads as curation.
+
+   The wide cell spans at every size: it holds the cliff-edge photograph the
+   gallery is built around, and squeezed into one narrow column its 16:9 crop
+   collapses to a letterbox sliver. */
+.gallery__item--wide { grid-column: span 2; }
+.gallery__item--tall { grid-row: span 3; }
+
+.gallery__btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  position: relative;
+  background: var(--moss);
+  height: 100%;
+}
+
+.gallery__btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.gallery__btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  transition: border-color var(--dur-mid) var(--ease-soft);
+  pointer-events: none;
+}
+
+.gallery__btn:hover img { transform: scale(1.04); }
+.gallery__btn:hover::after { border-color: var(--hairline-dark); }
+
+/* Terminal card — the last cell is not a photo. It sits exactly where
+   appetite peaks and reads as utility rather than a pitch. */
+.gallery__more {
+  display: grid;
+  align-content: center;
+  gap: var(--s-4);
+  padding: var(--s-6);
+  height: 100%;
+  border-radius: var(--r-card);
+  border: 1px solid var(--hairline-dark);
+  background: transparent;
+  color: var(--cream);
+  text-decoration: none;
+  transition: background-color var(--dur-mid) var(--ease-soft);
+}
+
+.gallery__more:hover { background: rgba(196, 165, 123, .08); }
+.gallery__more strong { font-family: var(--font-display); font-size: var(--t-h3); font-weight: 400; }
+.gallery__more span { color: var(--stone); font-size: var(--t-small); }
+
+
+/* ═══ Lightbox ═════════════════════════════════════════════════════════════ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lightbox);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  gap: var(--s-4);
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(11, 16, 13, .94);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-mid) var(--ease-soft), visibility var(--dur-mid);
+}
+
+.lightbox[open], .lightbox.is-open { opacity: 1; visibility: visible; }
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+  transform: scale(.98);
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+.lightbox.is-open .lightbox__img { transform: scale(1); }
+
+.lightbox__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  color: var(--stone);
+  font-size: var(--t-small);
+}
+
+.lightbox__caption { max-width: 60ch; text-align: center; }
+
+.lightbox__btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-dark);
+  color: var(--cream);
+  transition: background-color var(--dur-fast) var(--ease-soft);
+}
+.lightbox__btn:hover { background: rgba(196, 165, 123, .14); }
+.lightbox__btn svg { width: 1rem; height: 1rem; }
+
+.lightbox__close { position: absolute; top: var(--s-5); right: var(--s-5); }
+
+
+/* ═══ FAQ accordion ════════════════════════════════════════════════════════
+   Native <details>/<summary>. Works with JavaScript disabled, is keyboard
+   operable and screen-reader correct for free, and needs no ARIA. A custom
+   accordion would be more code and worse.                                    */
+
+.faq { display: grid; }
+
+.faq__item { border-top: 1px solid var(--rule); }
+.faq__item:last-child { border-bottom: 1px solid var(--rule); }
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  padding-block: var(--s-5);
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--t-lead);
+  font-weight: 500;
+  transition: color var(--dur-fast) var(--ease-soft);
+}
+
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q:hover { color: var(--moss); }
+
+.faq__chevron {
+  flex: none;
+  width: 1.125rem; height: 1.125rem;
+  color: var(--brass);
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.faq__item[open] .faq__chevron { transform: rotate(180deg); }
+
+.faq__a {
+  padding-bottom: var(--s-5);
+  color: var(--ink-2);
+  max-width: 68ch;
+}
+
+
+/* ═══ Mobile sticky bar ════════════════════════════════════════════════════ */
+
+.mobile-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: var(--z-mobilebar);
+  padding: var(--s-3) var(--s-4);
+  padding-bottom: calc(var(--s-3) + env(safe-area-inset-bottom));
+  background: var(--forest);
+  border-top: 1px solid var(--hairline-dark);
+  transform: translateY(110%);
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.mobile-bar.is-visible { transform: translateY(0); }
+
+@media (min-width: 720px) { .mobile-bar { display: none; } }
+
+
+/* ═══ Footer ═══════════════════════════════════════════════════════════════ */
+
+.footer {
+  background: var(--forest);
+  color: var(--stone);
+  padding-block: var(--s-8) var(--s-7);
+  font-size: var(--t-small);
+}
+
+.footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: var(--s-6);
+  border-bottom: 1px solid var(--hairline-dark);
+}
+
+.footer__brand {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 40;
+  font-size: 1.5rem;
+  color: var(--cream);
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-6);
+  justify-content: space-between;
+  padding-top: var(--s-5);
+}
+
+.footer a { color: var(--stone); text-decoration: none; border-bottom: 1px solid transparent; }
+.footer a:hover { color: var(--cream); border-bottom-color: var(--brass); }
+
+.footer__note { max-width: 62ch; color: var(--stone); }
