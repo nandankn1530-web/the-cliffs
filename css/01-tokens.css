@@ -44,29 +44,39 @@
   /* Warm off-white for the accented half of the hero headline. Brass was the
      obvious choice and it does not work: the hero photograph is near-white
      mist exactly where the headline sits, and brass lands around 3:1 there
-     even under a heavy scrim. Sand keeps the warm shift and clears 6:1.     */
-  --sand: #EFE0C8;
+     even under a heavy scrim.
+
+     Lifted from #EFE0C8, which was the dimmest thing on the first fold and
+     the half of the headline that actually failed to read — a warm mid-tone
+     sitting on warm bright mist. This keeps the warm shift that distinguishes
+     the accent line from the cream one, but well up the luminance scale
+     where the photograph can no longer swallow it.                          */
+  --sand: #FBF1DF;
 
   /* Two axes, because one is not enough on a bright photograph. The vertical
      pass seats the booking bar and darkens the sky behind the glass nav; the
      diagonal pass was originally tuned for left-aligned copy and faded to
      almost nothing (.02 / .06) past the middle of the frame — exactly where
-     the centered hero title's right half and lower line sit against the
-     photo's brightest mist. Both floors are raised here so no point behind
-     the title ever goes under ~0.28: still darkest lower-left, still clears
-     to reveal the photo on the right, but never thin enough to lose the
-     text over it. */
+     the centered hero title's outer ends sit against the photo's brightest
+     mist.
+
+     Raising these floors far enough to carry the headline on their own only
+     ever produced a muddy photograph: a full-frame gradient has to darken
+     everything to fix one band. So they sit at a middle setting that keeps
+     the glass nav legible at the top and the scroll cue legible at the
+     bottom, and the headline gets its own local pool instead — see
+     .hero__title::before in 05-sections.css.                                */
   --scrim:
     linear-gradient(100deg,
-      rgba(10, 46, 38, .90) 0%,
-      rgba(10, 46, 38, .76) 30%,
-      rgba(10, 46, 38, .48) 58%,
-      rgba(10, 46, 38, .30) 88%),
+      rgba(10, 46, 38, .88) 0%,
+      rgba(10, 46, 38, .70) 30%,
+      rgba(10, 46, 38, .40) 58%,
+      rgba(10, 46, 38, .22) 88%),
     linear-gradient(to top,
-      rgba(10, 46, 38, .80) 0%,
-      rgba(10, 46, 38, .42) 38%,
-      rgba(10, 46, 38, .28) 68%,
-      rgba(10, 46, 38, .46) 100%);
+      rgba(10, 46, 38, .78) 0%,
+      rgba(10, 46, 38, .34) 38%,
+      rgba(10, 46, 38, .22) 68%,
+      rgba(10, 46, 38, .44) 100%);
 
   /* --- CONTRAST RULES — these are not suggestions -----------------------
      Measured WCAG ratios across this palette:

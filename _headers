@@ -1,13 +1,34 @@
 # Netlify headers. Plain text, no build step required.
 
+# CACHING — read before changing any max-age here.
+#
+# There is no build step and no filename hashing: this deploys by dragging
+# the folder to Netlify Drop, so css/02-base.css keeps that exact URL
+# forever. `immutable` tells a browser never to revalidate for the lifetime
+# of the entry, so the year-long immutable values these rules used to carry
+# meant returning visitors were pinned to whatever CSS/JS they first
+# downloaded — no fix could reach them for up to a year.
+#
+# Worse than merely stale: caches expire per-file, so a visitor could hold
+# old CSS while fetching new JS. The JS would then set classes and call
+# APIs the cached CSS knows nothing about, which breaks the page in ways
+# that are near-impossible to reproduce locally.
+#
+# So: revalidate HTML/CSS/JS every time (a 304 is a few hundred bytes),
+# and give assets a week rather than a year, since CONTENT.md B2 requires
+# swapping the placeholder photography in at these same filenames.
+#
+# If page weight ever justifies long caching again, add a hash or ?v= to
+# the filenames FIRST, then restore immutable. Never immutable without it.
+
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
 /*.css
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.js
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.html
   Cache-Control: public, max-age=0, must-revalidate

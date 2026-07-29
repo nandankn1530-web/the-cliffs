@@ -13,9 +13,14 @@ html {
      The default OS scrollbar reads as stock against hand-set type and a
      deliberate palette. Thin and brand-toned in Firefox; the webkit rules
      below do the same for Chromium/Safari. Browsers that support neither
-     just keep their native scrollbar. */
+     just keep their native scrollbar.
+
+     --ink-soft, not --stone: a scrollbar is an interactive control, so
+     WCAG 1.4.11 wants 3:1 against its surround. Stone on cream is 2.52:1
+     — the contrast table in 01-tokens.css flags exactly that pairing as
+     failing. ink-soft is 5.2:1 and reads just as quiet. */
   scrollbar-width: thin;
-  scrollbar-color: var(--stone) transparent;
+  scrollbar-color: var(--ink-soft) transparent;
 }
 
 /* Lenis (05-motion.js) drives scroll itself once it starts, on desktop
@@ -30,7 +35,7 @@ html {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--stone);
+  background: var(--ink-soft);
   border-radius: var(--r-pill);
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--moss); }

@@ -116,30 +116,52 @@ window.TC = window.TC || {};
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var SPEED     = 34;    /* px per second */
-    var RESUME_MS = 2200;  /* pause length after the visitor lets go */
+    var RESUME_MS = 2200;  /* pause length after a one-off nudge */
 
     var direction   = 1;
-    var paused      = false;
+    var nudged      = false;  /* transient: a drag/wheel/keypress just happened */
+    var held        = false;  /* sticky: pointer is over it, or focus is inside */
     var inView      = true;
     var resumeTimer = null;
     var last        = null;
 
-    function pause() {
-      if (!paused) {
-        paused = true;
-        /* Hand snapping back to the browser while the visitor is in control */
-        rail.style.scrollSnapType = '';
-      }
+    function snapOn()  { rail.style.scrollSnapType = ''; }      /* back to the stylesheet's mandatory */
+    function snapOff() { rail.style.scrollSnapType = 'none'; }  /* a continuous drift would fight snap points */
+
+    /* Sticky hold. Hovering or tabbing in means the visitor is reading this
+       card *now* — sliding it out from under them is the single most
+       irritating thing an autoplaying carousel can do. Nothing resumes until
+       they actually leave. */
+    function hold()    { held = true; snapOn(); }
+    function release() { held = false; last = null; if (!nudged) snapOff(); }
+
+    /* Hover-hold only where hover is real. Touch browsers fire a synthetic
+       mouseenter on tap, and the matching mouseleave may never arrive — that
+       would latch `held` on and strand the rail for the rest of the visit.
+       Focus is bound unconditionally: it is the keyboard path, and it always
+       pairs correctly. */
+    if (window.matchMedia('(hover: hover)').matches) {
+      rail.addEventListener('mouseenter', hold);
+      rail.addEventListener('mouseleave', release);
+    }
+    rail.addEventListener('focusin', hold);
+    rail.addEventListener('focusout', release);
+
+    /* Transient nudge — a wheel tick or swipe that doesn't leave the pointer
+       resting on the rail. Gives control back for a beat, then resumes. */
+    function nudge() {
+      nudged = true;
+      snapOn();
       window.clearTimeout(resumeTimer);
       resumeTimer = window.setTimeout(function () {
-        paused = false;
-        last = null; /* re-baseline dt so the pause itself isn't counted as travel */
-        rail.style.scrollSnapType = 'none'; /* a continuous drift would fight snap points */
+        nudged = false;
+        last = null; /* re-baseline dt so the pause isn't counted as travel */
+        if (!held) snapOff();
       }, RESUME_MS);
     }
 
     ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (evt) {
-      rail.addEventListener(evt, pause, { passive: true });
+      rail.addEventListener(evt, nudge, { passive: true });
     });
 
     /* Don't spend a rAF loop scrolling something nobody can see */
@@ -155,7 +177,7 @@ window.TC = window.TC || {};
       var dt = (time - last) / 1000;
       last = time;
 
-      if (paused || !inView) return;
+      if (nudged || held || !inView) return;
 
       var max = rail.scrollWidth - rail.clientWidth;
       if (max <= 0) return;
@@ -166,7 +188,7 @@ window.TC = window.TC || {};
       rail.scrollLeft = next;
     }
 
-    rail.style.scrollSnapType = 'none';
+    snapOff();
     requestAnimationFrame(tick);
   }
 

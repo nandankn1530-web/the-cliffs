@@ -114,7 +114,7 @@
   align-items: center;
   gap: var(--s-2);
   text-align: center;
-  color: var(--cream);
+  color: var(--cream-lift);
   pointer-events: none;
   /* A single soft 40px blur spreads the darkening too thin to hold an edge
      against the photo's brightest mist. Layered instead: a tight, near-solid
@@ -131,6 +131,37 @@
   opacity: clamp(0, calc((0.8 - var(--p)) / 0.45), 1);
 }
 
+/* ── The headline's own pool of shade ──────────────────────────────────────
+   The scrim is a full-frame gradient, so the only way it can carry a
+   *centered* headline is by darkening the entire photograph with it. This
+   darkens just the band the words occupy instead.
+
+   At --p 0 the only reliably dark thing behind the title is the veiled
+   reveal card, which is 17rem wide — the headline is far wider than that, so
+   its two ends were hanging over open mist with nothing behind them. That is
+   the actual reason the first fold read as low-contrast, and no text colour
+   alone could fix it.
+
+   It lives on the title rather than in .hero__scrim so it inherits the
+   title's own opacity curve exactly: full strength while the words are
+   readable, completely gone by the time the photograph opens.               */
+.hero__title::before {
+  content: '';
+  position: absolute;
+  /* Generous bleed — the falloff needs room to end on nothing. A pool that
+     stops inside the viewport reads as a grey rectangle, which is worse than
+     the problem it solves. */
+  inset: -70% -8%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 48% 40% at 50% 50%,
+    rgba(8, 20, 16, .72) 0%,
+    rgba(8, 20, 16, .54) 44%,
+    rgba(8, 20, 16, .26) 72%,
+    transparent 100%);
+}
+
 .hero__word { display: block; }
 .hero__word--in  { transform: translateX(calc(var(--p) * -26vw)); }
 .hero__word--out { transform: translateX(calc(var(--p) *  26vw)); color: var(--sand); font-style: italic; }
@@ -139,7 +170,8 @@
   position: absolute;
   z-index: 1;
   bottom: clamp(1.5rem, 5vh, 3rem);
-  color: rgba(244, 241, 234, .7);
+  color: rgba(251, 249, 245, .88);
+  text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .55);
   opacity: clamp(0, calc(1 - var(--p) * 2.4), 1);
   pointer-events: none;
 }

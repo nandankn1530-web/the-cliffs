@@ -24,6 +24,18 @@ window.TC = window.TC || {};
 
     var filters = document.querySelectorAll('.filter');
 
+    /* 06-motion.css styles `.gallery__item.is-filtering` to shrink slightly as
+       it fades — "a plain opacity drop reads as a rendering glitch". Nothing
+       ever added that class, so the rule was dead and items just vanished the
+       instant `hidden` was set. Now the class drives an exit transition and
+       `hidden` is deferred until it finishes.
+
+       Under reduced motion the exit is zero-length: 02-base.css pins these
+       items to opacity 1, so waiting out a transition that cannot animate
+       would just leave removed photographs on screen for 420ms. */
+    var reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var EXIT_MS  = reduced ? 0 : 420;   /* matches --dur-mid */
+
     function applyFilter(cat) {
       var shown = 0;
 
@@ -32,8 +44,26 @@ window.TC = window.TC || {};
         /* The terminal Airbnb card has no data-cat and always stays. It is
            the point of the section, not a photograph to be filtered out. */
         var keep = !itemCat || cat === 'all' || itemCat === cat;
-        item.hidden = !keep;
         if (keep && itemCat) shown++;
+
+        /* Cleared every pass, or fast repeated filtering leaves a stale timer
+           that hides a cell the newest filter just brought back. */
+        window.clearTimeout(item._filterTimer);
+
+        if (keep) {
+          item.hidden = false;
+          /* Next frame: the element needs a laid-out start state to animate
+             from, which it does not have in the same tick as `hidden=false`. */
+          requestAnimationFrame(function () { item.classList.remove('is-filtering'); });
+        } else {
+          var wasVisible = !item.hidden;
+          item.classList.add('is-filtering');
+          if (wasVisible && EXIT_MS) {
+            item._filterTimer = window.setTimeout(function () { item.hidden = true; }, EXIT_MS);
+          } else {
+            item.hidden = true;   /* already gone, or motion is suppressed */
+          }
+        }
       });
 
       if (status) {
@@ -65,6 +95,7 @@ window.TC = window.TC || {};
 
     var index = 0;
     var opener = null;
+    var hideTimer = null;
 
     function visibleButtons() {
       return buttons.filter(function (b) {
@@ -98,6 +129,10 @@ window.TC = window.TC || {};
       if (index < 0) return;
 
       opener = btn;
+      /* close() hides the box on a timer. Reopening inside that window would
+         otherwise let the old timer fire and hide the viewer the visitor has
+         just opened. */
+      window.clearTimeout(hideTimer);
       box.hidden = false;
       /* Next frame, so the transition has a start state to animate from */
       requestAnimationFrame(function () { box.classList.add('is-open'); });
@@ -111,7 +146,7 @@ window.TC = window.TC || {};
       box.classList.remove('is-open');
       document.body.style.overflow = '';
       if (TC.lenis) TC.lenis.start();
-      window.setTimeout(function () { box.hidden = true; }, 420);
+      hideTimer = window.setTimeout(function () { box.hidden = true; }, 420);
       if (opener) opener.focus();
       opener = null;
     }
