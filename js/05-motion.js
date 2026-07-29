@@ -26,12 +26,29 @@ window.TC = window.TC || {};
     if (!window.matchMedia('(pointer: fine)').matches) return;
     if (typeof window.Lenis !== 'function') return;
 
+    /* duration+easing runs a fixed-length tween per scroll gesture, and this
+       curve (like most "expensive" ease-outs) starts at near-zero velocity —
+       maybe 50ms of almost no visible movement before it accelerates. A
+       trackpad or wheel fires a new gesture every couple of frames, so that
+       slow-start replays constantly, and it reads as "I scrolled and nothing
+       happened for a beat" rather than as smoothing. lerp mode has no such
+       thing: every frame moves the visible position a fixed fraction of the
+       remaining distance toward the input, so it starts responding on the
+       very next frame and never re-plays a launch animation. Higher lerp =
+       tighter tracking to the input; 0.15 is smoothed but not delayed. */
     var lenis = new window.Lenis({
-      duration: 1.05,
-      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-      wheelMultiplier: 0.9,
+      lerp: 0.15,
+      wheelMultiplier: 1,
       smoothWheel: true
     });
+
+    /* Lenis's docs call this out explicitly: native CSS smooth-scrolling and
+       Lenis both try to own the scroll position, and running both at once is
+       a documented source of stutter — two easing curves fighting over the
+       same scrollTop. `scroll-behavior: smooth` in 02-base.css stays as the
+       fallback for no-JS, reduced-motion and touch (where Lenis never
+       starts); it only steps aside once Lenis is confirmed running. */
+    document.documentElement.classList.add('has-lenis');
 
     function raf(time) {
       lenis.raf(time);

@@ -80,6 +80,14 @@
 .btn--sm .btn__badge { width: 1.75rem; height: 1.75rem; }
 .btn--sm .btn__badge svg { width: 0.75rem; height: 0.75rem; }
 
+/* At mouse size .btn--sm sits at 40px tall, which is fine for a cursor. The
+   only place it appears (.nav__cta) is also the first thing a touch-tablet
+   visitor meets, so on a coarse pointer it gets the extra 4px that clears
+   the 44px minimum tap target — invisible to anyone using a mouse. */
+@media (pointer: coarse) {
+  .btn--sm { padding-block: 0.4375rem; }
+}
+
 .btn--block { display: flex; width: 100%; justify-content: space-between; }
 
 /* Inline text link with a brass underline that grows on hover */
@@ -291,11 +299,22 @@
 }
 
 /* Once the nav leaves the hero the photo is gone from behind it, so the
-   translucent fill has nothing to sit on — it goes solid pine instead. */
+   translucent fill has nothing to sit on — it goes solid pine instead.
+
+   backdrop-filter is dropped here too, not just visually redundant on a
+   96%-opaque fill but genuinely expensive: this element is `position:
+   sticky` for the entire remaining scroll length of the page, so a live
+   blur+saturate sample was being recomputed every single scroll frame,
+   for every section after the hero, on every device. That is the single
+   biggest main-thread/GPU cost in the whole page's scroll path — far more
+   than any of the scroll-linked transforms — and it was buying almost no
+   visible difference over a flat fill this close to opaque. */
 .nav.is-stuck .nav__inner {
   background: var(--nav-stuck);
   border-color: transparent;
   box-shadow: 0 8px 30px rgba(10, 46, 38, .28);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .nav__brand {

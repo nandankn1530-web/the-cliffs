@@ -9,7 +9,31 @@ html {
   scroll-behavior: smooth;
   /* Anchor targets clear the sticky nav */
   scroll-padding-top: 6.5rem;
+  /* --- Scrollbar -----------------------------------------------------
+     The default OS scrollbar reads as stock against hand-set type and a
+     deliberate palette. Thin and brand-toned in Firefox; the webkit rules
+     below do the same for Chromium/Safari. Browsers that support neither
+     just keep their native scrollbar. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--stone) transparent;
 }
+
+/* Lenis (05-motion.js) drives scroll itself once it starts, on desktop
+   pointer:fine only. Left running alongside it, native smooth-scroll fights
+   Lenis for the same scrollTop on every anchor jump — a documented cause of
+   stutter. `.has-lenis` is added only after Lenis actually initialises, so
+   touch, reduced-motion and no-JS keep native smooth-scroll as-is. */
+.has-lenis {
+  scroll-behavior: auto;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--stone);
+  border-radius: var(--r-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--moss); }
 
 body,
 h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol {
