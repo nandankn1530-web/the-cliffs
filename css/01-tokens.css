@@ -49,19 +49,24 @@
 
   /* Two axes, because one is not enough on a bright photograph. The vertical
      pass seats the booking bar and darkens the sky behind the glass nav; the
-     diagonal pass carries the copy, which sits left of centre. Measured
-     against this image, not assumed: cream lands ~7:1, sand ~6:1.           */
+     diagonal pass was originally tuned for left-aligned copy and faded to
+     almost nothing (.02 / .06) past the middle of the frame — exactly where
+     the centered hero title's right half and lower line sit against the
+     photo's brightest mist. Both floors are raised here so no point behind
+     the title ever goes under ~0.28: still darkest lower-left, still clears
+     to reveal the photo on the right, but never thin enough to lose the
+     text over it. */
   --scrim:
     linear-gradient(100deg,
       rgba(10, 46, 38, .90) 0%,
-      rgba(10, 46, 38, .74) 30%,
-      rgba(10, 46, 38, .28) 58%,
-      rgba(10, 46, 38, .02) 88%),
+      rgba(10, 46, 38, .76) 30%,
+      rgba(10, 46, 38, .48) 58%,
+      rgba(10, 46, 38, .30) 88%),
     linear-gradient(to top,
-      rgba(10, 46, 38, .78) 0%,
-      rgba(10, 46, 38, .26) 38%,
-      rgba(10, 46, 38, .06) 68%,
-      rgba(10, 46, 38, .38) 100%);
+      rgba(10, 46, 38, .80) 0%,
+      rgba(10, 46, 38, .42) 38%,
+      rgba(10, 46, 38, .28) 68%,
+      rgba(10, 46, 38, .46) 100%);
 
   /* --- CONTRAST RULES — these are not suggestions -----------------------
      Measured WCAG ratios across this palette:

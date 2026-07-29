@@ -116,7 +116,15 @@
   text-align: center;
   color: var(--cream);
   pointer-events: none;
-  text-shadow: 0 2px 40px rgba(10, 46, 38, .5);
+  /* A single soft 40px blur spreads the darkening too thin to hold an edge
+     against the photo's brightest mist. Layered instead: a tight, near-solid
+     pass right at the glyph edge for a crisp outline, then two wider, softer
+     passes for the ambient glow — legible over any patch of sky or mist,
+     not just the parts sampled when the scrim was tuned. */
+  text-shadow:
+    0 1px 3px rgba(8, 20, 16, .85),
+    0 4px 18px rgba(8, 20, 16, .6),
+    0 12px 44px rgba(10, 46, 38, .45);
   /* Hold full strength through the first third, then clear completely by 0.8.
      Letting it linger to p=1 leaves it lying across the photograph and clipped
      at both edges, which reads as a bug rather than a transition. */
