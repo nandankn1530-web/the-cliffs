@@ -46,12 +46,17 @@
      mist exactly where the headline sits, and brass lands around 3:1 there
      even under a heavy scrim.
 
-     Lifted from #EFE0C8, which was the dimmest thing on the first fold and
-     the half of the headline that actually failed to read — a warm mid-tone
-     sitting on warm bright mist. This keeps the warm shift that distinguishes
-     the accent line from the cream one, but well up the luminance scale
-     where the photograph can no longer swallow it.                          */
-  --sand: #FBF1DF;
+     DARK GROUNDS ONLY, like brass and stone — it is used on exactly one
+     element, the italic half of the hero headline, which sits on either the
+     pooled photograph or the pine ground. 8.66:1 on pine.
+
+     It went to #FBF1DF while the headline was fighting bare mist, which was
+     safe but so close to cream that the two-tone stopped reading as two
+     tones at all. The window now guarantees the headline a dark backing at
+     every scroll position, so the accent can afford to be properly gold
+     again — which is what makes the pairing look deliberate rather than
+     like a rendering inconsistency.                                        */
+  --sand: #F2DCB3;
 
   /* Two axes, because one is not enough on a bright photograph. The vertical
      pass seats the booking bar and darkens the sky behind the glass nav; the
@@ -142,6 +147,19 @@
   --s-5: 1.5rem;    --s-6: 2rem;      --s-7: 3rem;      --s-8: 4rem;
   --s-9: 6rem;      --s-10: 8rem;     --s-11: 12rem;
 
+  /* --- The hero window --------------------------------------------------
+     --hero-travel  how far you scroll before the window is fully open. The
+                    reference implementation used 1500px; this is shorter on
+                    purpose, because every pixel of it is scrolling that does
+                    not move the page, and too much of that reads as a broken
+                    scrollbar rather than as an effect. Raise it for a slower,
+                    more cinematic open; lower it if it ever feels sticky.
+     --hero-clip    how far in each edge of the closed window starts. 25% is
+                    the reference default and gives a centred pane at half the
+                    viewport in each axis.                                   */
+  --hero-travel: 115vh;
+  --hero-clip:   25%;
+
   --section-y:  clamp(5rem, 11vh, 9rem);   /* vertical rhythm between sections */
   --gutter:     clamp(1.25rem, 5vw, 4.5rem);
   --measure:    68ch;                       /* max line length for prose */
@@ -150,7 +168,7 @@
   /* --- Radius — the references are generously rounded ------------------- */
 
   --r-pill:  999px;
-  --r-hero:  clamp(20px, 2.2vw, 34px);  /* the hero card */
+  --r-hero:  clamp(20px, 2.2vw, 34px);  /* the hero window, before it opens */
   --r-img:   24px;
   --r-card:  18px;
   --r-sm:    10px;
@@ -173,6 +191,16 @@
   --z-nav:      50;
   --z-mobilebar:60;
   --z-lightbox: 100;
+}
+
+/* On a narrow, tall viewport a 25% inset leaves a window too small to read as
+   a photograph, and every pinned pixel costs more on touch than it does with
+   a scroll wheel. Both are eased off. */
+@media (max-width: 768px) {
+  :root {
+    --hero-clip:   15%;
+    --hero-travel: 80vh;
+  }
 }
 
 /* --- Dark sections ---------------------------------------------------------

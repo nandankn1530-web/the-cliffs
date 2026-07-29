@@ -102,47 +102,46 @@
 <main id="main">
 
   <!-- ══════════ 1 · HERO — 840 M ══════════
-       A full-bleed photograph with the headline over it, and the supporting
-       copy and booking bar on pine below.
+       A clip-path window that opens as you scroll, over a photograph that
+       is full-bleed and loaded from the first frame — the mask moves, the
+       image does not arrive. The supporting copy and booking bar sit on
+       pine below.
 
-       This used to be a scroll-expansion reveal: a 240vh track with the
-       stage pinned to the top of it, so a small card grew into the
-       landscape as you scrolled, driven by a --p custom property. Two
-       problems, both fatal to first impressions:
+       The track supplies the scroll distance; the stage pins to the top of
+       it; progress through the track (0 → 1) drives the window, the zoom
+       and the headline's pool of shade through one custom property, --hp.
 
-         · The photograph was not the background. It arrived, in pieces, as
-           a reward for scrolling — so the first thing a visitor saw was
-           mostly empty dark ground.
-         · A 240vh pinned track means the first two and a half screens of
-           scrolling move nothing down the page. That is indistinguishable
-           from the scroll being broken, and it is what "the scroll gets
-           stuck" was describing.
+       Nothing here hijacks the wheel. Progress is read from real scroll
+       position, so keyboard scrolling, dragging the scrollbar, Page Down,
+       Home/End and find-in-page all behave normally.
 
-       The photograph is now simply the background of a one-viewport hero:
-       present at first paint, no scroll required, and scrolling moves the
-       page immediately.                                                    -->
+       Without JS the track collapses and --hp stays 1, so the hero renders
+       as a plain full-bleed photograph.                                   -->
   <section class="section hero" id="hero" aria-labelledby="hero-title" data-theme="dark">
 
-    <div class="hero__stage">
+    <div class="hero__track">
+      <div class="hero__stage">
 
-      <img data-slot="hero-cloudline"
-           src="assets/images/hero-cloudline-1920.jpg"
-           srcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                   assets/images/hero-cloudline-1920.jpg 1920w"
-           sizes="100vw"
-           width="1920" height="1280"
-           fetchpriority="high" decoding="async"
-           class="hero__bg kb kb--slow"
-           alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+        <div class="hero__frame">
+          <img data-slot="hero-cloudline"
+               src="assets/images/hero-cloudline-1920.jpg"
+               srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                       assets/images/hero-cloudline-1920.jpg 1920w"
+               sizes="100vw"
+               width="1920" height="1280"
+               fetchpriority="high" decoding="async"
+               class="hero__bg"
+               alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+          <div class="hero__scrim" aria-hidden="true"></div>
+        </div>
 
-      <div class="hero__scrim" aria-hidden="true"></div>
+        <h1 class="hero__title" id="hero-title">
+          <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
+          <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
+        </h1>
 
-      <h1 class="hero__title" id="hero-title">
-        <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
-        <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
-      </h1>
-
-      <p class="label hero__cue" aria-hidden="true">Scroll</p>
+        <p class="label hero__cue" aria-hidden="true">Scroll to open</p>
+      </div>
     </div>
 
     <div class="hero__after">
@@ -902,6 +901,7 @@
 <script src="js/05-motion.js" defer></script>
 <script src="js/06-gallery.js" defer></script>
 <script src="js/07-cta.js" defer></script>
+<script src="js/08-hero-scroll.js" defer></script>
 <script src="js/99-audit.js" defer></script>
 
 <!-- No aggregateRating, review or priceRange: there are no reviews and no

@@ -3,12 +3,21 @@
    ========================================================================= */
 
 /* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
-   One rounded card on a pine ground: photograph, scrim, copy anchored
-   bottom-left, booking bar straddling the lower edge.
+   A clip-path window that opens as you scroll.
 
-   Text now sits ON the photograph, so contrast is no longer free. The scrim
-   in --scrim holds cream above 7:1 against the lightest pixels this image
-   actually contains — verified by sampling, not assumed.                    */
+   The photograph is the stage's background from the very first frame,
+   full-bleed and already loaded — it is only *masked* to a centred window
+   that widens to the full viewport as you scroll. That is the important
+   difference from the scroll-expansion reveal this replaced, where the
+   photo genuinely was not there until you scrolled and assembled it.
+
+   Everything is driven by one custom property, --hp (0 → 1), written to
+   .hero__stage by js/08-hero-scroll.js. Every width, radius, scale and
+   opacity below is a calc() off it, so the tuning lives here with the rest
+   of the design and the JS stays a scroll listener and one style write.
+
+   --hp defaults to 1 (fully open) and is only set to 0 under `.js`, so with
+   scripts disabled the hero renders as a normal full-bleed photograph.     */
 
 .hero {
   background: var(--pine);
@@ -17,9 +26,19 @@
   padding-inline: 0;
 }
 
-/* One viewport, no track, no pin. The photograph is the background and is
-   there at first paint — scrolling moves the page, as it should. */
+/* The track supplies the scroll distance the window needs to open. Only
+   under `.js` — otherwise it is dead scroll past a static hero.
+
+   --hero-travel is the one number to change if this feels too long: it is
+   how far you scroll before the window is fully open. It is deliberately
+   shorter than the reference implementation's 1500px, because a pinned
+   hero that outlasts the visitor's patience reads as a broken scrollbar
+   rather than as an effect. */
+.hero__track { position: relative; }
+.js .hero__track { height: calc(100svh + var(--hero-travel)); }
+
 .hero__stage {
+  --hp: 1;
   position: relative;
   height: 100svh;
   overflow: hidden;
@@ -28,20 +47,41 @@
   place-items: center;
 }
 
+.js .hero__stage { --hp: 0; position: sticky; top: 0; }
+
+/* The window. inset() rather than the reference's polygon() because it
+   expresses the identical shape — inset(25%) is exactly that polygon — and
+   unlike polygon() it takes `round`, so the window can carry the site's
+   corner radius and lose it as it goes full-bleed. A hard-cornered
+   rectangle opening on a rounded-everything page would look unfinished. */
+.hero__frame {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: inset(
+    calc(var(--hero-clip) - var(--hero-clip) * var(--hp))
+    round
+    calc(var(--r-hero) - var(--r-hero) * var(--hp))
+  );
+}
+
 .hero__bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -3;
+  /* Pulls back as the window opens, so the frame is not merely revealing a
+     static image — the photograph settles into place with it. */
+  transform: scale(calc(1.42 - 0.42 * var(--hp)));
 }
 
+/* Inside the frame, so it is clipped with the photograph rather than
+   darkening the pine ground the closed window sits on. */
 .hero__scrim {
   position: absolute;
   inset: 0;
   background: var(--scrim);
-  z-index: -2;
 }
 
 /* ── Title ─────────────────────────────────────────────────────────────────
@@ -81,7 +121,13 @@
    The scrim is a full-frame gradient, so the only way it can carry a
    *centered* headline is by darkening the entire photograph with it, which
    just makes the photo muddy. This darkens only the band the words occupy,
-   and falls off to nothing well before the frame edge.                      */
+   and falls off to nothing well before the frame edge.
+
+   It fades in with the window. Closed, most of the headline overhangs the
+   window onto the pine ground, which is already 10.33:1 — a full-strength
+   pool there would sit on the pine as a visible dark smudge, solving a
+   contrast problem that does not exist yet. Open, the headline is on bare
+   photograph and needs all of it.                                          */
 .hero__title::before {
   content: '';
   position: absolute;
@@ -91,6 +137,7 @@
   inset: -70% -8%;
   z-index: -1;
   pointer-events: none;
+  opacity: calc(0.3 + 0.7 * var(--hp));
   background: radial-gradient(
     ellipse 48% 40% at 50% 50%,
     rgba(8, 20, 16, .72) 0%,
@@ -135,10 +182,13 @@
   max-width: 60rem;
 }
 
-/* Reduced motion: the cue stops breathing. Everything else in this hero is
-   static by construction now, so there is nothing else to suppress. */
+/* Reduced motion: no window, no zoom, no breathing cue. The track collapses
+   so there is no pinned dead scroll either, and the hero renders as the
+   plain full-bleed photograph it resolves to anyway. Same destination. */
 @media (prefers-reduced-motion: reduce) {
-  .hero__cue { animation: none; opacity: .8; }
+  .js .hero__track { height: auto; }
+  .js .hero__stage { position: relative; --hp: 1; }
+  .hero__cue { display: none; }
 }
 
 /* The eyebrow sits on pine below the stage now, so brass would be legal —
