@@ -35,7 +35,21 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..500;1,6..96,400..500&family=Instrument+Sans:wght@400;500&display=swap">
+<!-- display=optional, not swap.
+
+     With `swap` the browser paints the fallback immediately and then
+     re-paints every heading and paragraph the moment the webfont arrives —
+     that second pass is the "words load, then get replaced" flicker.
+
+     `optional` gives the font a short window to arrive: if it makes it, it
+     is used from the very first paint; if it does not, the fallback is kept
+     for this load and the font is cached for the next one. Either way the
+     text is only ever painted once — there is no swap.
+
+     This is safe here specifically because the @font-face fallbacks in
+     01-tokens.css are metric-adjusted (size-adjust / ascent-override), so
+     the fallback occupies identical space and a miss costs no layout. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..500;1,6..96,400..500&family=Instrument+Sans:wght@400;500&display=optional">
 
 <link rel="stylesheet" href="css/01-tokens.css">
 <link rel="stylesheet" href="css/02-base.css">
@@ -88,61 +102,49 @@
 <main id="main">
 
   <!-- ══════════ 1 · HERO — 840 M ══════════
-       A single rounded card: photograph, scrim, copy anchored bottom-left,
-       and a booking bar straddling the lower edge. The sticky nav is styled
-       to float inside the card's top edge, but lives outside it in the DOM —
-       `position: sticky` cannot survive an `overflow: hidden` ancestor.     -->
+       A full-bleed photograph with the headline over it, and the supporting
+       copy and booking bar on pine below.
+
+       This used to be a scroll-expansion reveal: a 240vh track with the
+       stage pinned to the top of it, so a small card grew into the
+       landscape as you scrolled, driven by a --p custom property. Two
+       problems, both fatal to first impressions:
+
+         · The photograph was not the background. It arrived, in pieces, as
+           a reward for scrolling — so the first thing a visitor saw was
+           mostly empty dark ground.
+         · A 240vh pinned track means the first two and a half screens of
+           scrolling move nothing down the page. That is indistinguishable
+           from the scroll being broken, and it is what "the scroll gets
+           stuck" was describing.
+
+       The photograph is now simply the background of a one-viewport hero:
+       present at first paint, no scroll required, and scrolling moves the
+       page immediately.                                                    -->
   <section class="section hero" id="hero" aria-labelledby="hero-title" data-theme="dark">
 
-    <!-- The track exists only to supply scroll distance. The stage pins to the
-         top of it, and progress through the track (0 → 1) drives every value
-         below via a single custom property, --p.
+    <div class="hero__stage">
 
-         The original React component hijacked the wheel event and forced
-         scrollTo(0,0) until expansion finished. That breaks keyboard scrolling,
-         scrollbar dragging, Page Down and find-in-page. A sticky pin driven by
-         real scroll position gives the identical effect and breaks none of it.
+      <img data-slot="hero-cloudline"
+           src="assets/images/hero-cloudline-1920.jpg"
+           srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                   assets/images/hero-cloudline-1920.jpg 1920w"
+           sizes="100vw"
+           width="1920" height="1280"
+           fetchpriority="high" decoding="async"
+           class="hero__bg kb kb--slow"
+           alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
 
-         Without JS the track collapses to auto height and --p stays 1, so the
-         hero renders in its final, fully-open state. -->
-    <div class="hero__track">
-      <div class="hero__stage">
+      <div class="hero__scrim" aria-hidden="true"></div>
 
-        <img data-slot="hero-cloudline"
-             src="assets/images/hero-cloudline-1920.jpg"
-             srcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                     assets/images/hero-cloudline-1920.jpg 1920w"
-             sizes="100vw"
-             width="1920" height="1280"
-             fetchpriority="high" decoding="async"
-             class="hero__bg"
-             alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
+        <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
+      </h1>
 
-        <div class="hero__scrim" aria-hidden="true"></div>
-
-        <!-- The property itself, opening out of the landscape as you scroll -->
-        <figure class="hero__reveal">
-          <img data-slot="hero-reveal"
-               src="assets/images/hero-reveal-960.jpg"
-               srcset="assets/images/hero-reveal-960.jpg 960w,
-                       assets/images/hero-reveal-1440.jpg 1440w"
-               sizes="(max-width: 768px) 90vw, 1100px"
-               width="1440" height="960"
-               decoding="async"
-               alt="The pool terrace at dusk, lit from within, looking out over the valley.">
-          <span class="hero__reveal-veil" aria-hidden="true"></span>
-        </figure>
-
-        <h1 class="hero__title" id="hero-title">
-          <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
-          <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
-        </h1>
-
-        <p class="label hero__cue" aria-hidden="true">Scroll to open</p>
-      </div>
+      <p class="label hero__cue" aria-hidden="true">Scroll</p>
     </div>
 
-    <!-- Revealed once the property image has finished opening -->
     <div class="hero__after">
       <div class="hero__inner">
         <p class="label hero__eyebrow">
@@ -892,7 +894,6 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="js/00-config.js" defer></script>
 <script src="js/01-images.js" defer></script>
 <script src="js/02-nav.js" defer></script>
@@ -901,7 +902,6 @@
 <script src="js/05-motion.js" defer></script>
 <script src="js/06-gallery.js" defer></script>
 <script src="js/07-cta.js" defer></script>
-<script src="js/08-hero-expand.js" defer></script>
 <script src="js/99-audit.js" defer></script>
 
 <!-- No aggregateRating, review or priceRange: there are no reviews and no

@@ -11,19 +11,14 @@
    actually contains — verified by sampling, not assumed.                    */
 
 .hero {
-  --p: 1;                /* scroll progress 0 → 1; JS overwrites. 1 = open,
-                            so no-JS and reduced-motion land fully revealed. */
   background: var(--pine);
   padding-top: 0;
   padding-bottom: clamp(3rem, 7vh, 6rem);
   padding-inline: 0;
 }
 
-/* Scroll distance for the reveal. Only when JS is running — otherwise there is
-   nothing to animate and 220vh of pinned hero would just be dead scroll. */
-.hero__track { position: relative; }
-.js .hero__track { height: 240vh; }
-
+/* One viewport, no track, no pin. The photograph is the background and is
+   there at first paint — scrolling moves the page, as it should. */
 .hero__stage {
   position: relative;
   height: 100svh;
@@ -33,9 +28,6 @@
   place-items: center;
 }
 
-.js .hero__stage { position: sticky; top: 0; }
-
-/* Background landscape — recedes as the property opens over it */
 .hero__bg {
   position: absolute;
   inset: 0;
@@ -43,8 +35,6 @@
   height: 100%;
   object-fit: cover;
   z-index: -3;
-  opacity: calc(1 - var(--p) * 0.55);
-  transform: scale(calc(1 + var(--p) * 0.06));
 }
 
 .hero__scrim {
@@ -52,59 +42,19 @@
   inset: 0;
   background: var(--scrim);
   z-index: -2;
-  opacity: calc(1 - var(--p) * 0.35);
 }
 
-/* ── The reveal ────────────────────────────────────────────────────────────
-   Starts as a small portrait card sitting in the landscape and opens to a
-   wide letterbox. Width and height are interpolated independently, which is
-   what makes it read as "opening" rather than merely scaling.               */
-
-.hero__reveal {
-  --w-start: 17rem;
-  --w-span:  62rem;
-  --h-start: 23rem;
-  --h-span:  9rem;
-
-  position: relative;
-  z-index: -1;
-  margin: 0;
-  overflow: hidden;
-  border-radius: var(--r-hero);
-  width:  min(92vw, calc(var(--w-start) + var(--p) * var(--w-span)));
-  height: min(84svh, calc(var(--h-start) + var(--p) * var(--h-span)));
-  box-shadow: 0 30px 80px rgba(10, 46, 38, .45);
-}
-
-.hero__reveal img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Dark early, clear once open — the photograph earns its clarity */
-.hero__reveal-veil {
-  position: absolute;
-  inset: 0;
-  background: rgba(10, 46, 38, .78);
-  opacity: calc(1 - var(--p));
-}
-
-@media (max-width: 768px) {
-  .hero__reveal {
-    --w-start: 13rem;
-    --w-span:  30rem;
-    --h-start: 19rem;
-    --h-span:  7rem;
-  }
-}
-
-/* ── Split title ───────────────────────────────────────────────────────────
-   The two halves part as the image opens, then fade so they never fight the
-   photograph. Still one <h1> with continuous text for assistive tech.       */
+/* ── Title ─────────────────────────────────────────────────────────────────
+   Two lines, the second italic and warm. One <h1> with continuous text for
+   assistive tech.                                                          */
 
 .hero__title {
-  position: absolute;
+  /* In flow, so the stage's `place-items: center` does the centring. It used
+     to be absolute and lean on its static position, which only resolved
+     correctly because the reveal card was there as an in-flow sibling. With
+     that gone there is nothing to derive a static position from, so this is
+     now explicit rather than incidental. */
+  position: relative;
   z-index: 1;
   margin: 0;
   width: 100%;
@@ -125,26 +75,13 @@
     0 1px 3px rgba(8, 20, 16, .85),
     0 4px 18px rgba(8, 20, 16, .6),
     0 12px 44px rgba(10, 46, 38, .45);
-  /* Hold full strength through the first third, then clear completely by 0.8.
-     Letting it linger to p=1 leaves it lying across the photograph and clipped
-     at both edges, which reads as a bug rather than a transition. */
-  opacity: clamp(0, calc((0.8 - var(--p)) / 0.45), 1);
 }
 
 /* ── The headline's own pool of shade ──────────────────────────────────────
    The scrim is a full-frame gradient, so the only way it can carry a
-   *centered* headline is by darkening the entire photograph with it. This
-   darkens just the band the words occupy instead.
-
-   At --p 0 the only reliably dark thing behind the title is the veiled
-   reveal card, which is 17rem wide — the headline is far wider than that, so
-   its two ends were hanging over open mist with nothing behind them. That is
-   the actual reason the first fold read as low-contrast, and no text colour
-   alone could fix it.
-
-   It lives on the title rather than in .hero__scrim so it inherits the
-   title's own opacity curve exactly: full strength while the words are
-   readable, completely gone by the time the photograph opens.               */
+   *centered* headline is by darkening the entire photograph with it, which
+   just makes the photo muddy. This darkens only the band the words occupy,
+   and falls off to nothing well before the frame edge.                      */
 .hero__title::before {
   content: '';
   position: absolute;
@@ -163,27 +100,34 @@
 }
 
 .hero__word { display: block; }
-.hero__word--in  { transform: translateX(calc(var(--p) * -26vw)); }
-.hero__word--out { transform: translateX(calc(var(--p) *  26vw)); color: var(--sand); font-style: italic; }
+.hero__word--out { color: var(--sand); font-style: italic; }
 
 .hero__cue {
   position: absolute;
   z-index: 1;
+  /* Explicit left/right rather than relying on a static position that no
+     longer has an in-flow sibling to resolve against. */
+  left: 0;
+  right: 0;
+  text-align: center;
   bottom: clamp(1.5rem, 5vh, 3rem);
   color: rgba(251, 249, 245, .88);
   text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .55);
-  opacity: clamp(0, calc(1 - var(--p) * 2.4), 1);
   pointer-events: none;
+  /* A slow breath, so it reads as an invitation rather than a label. */
+  animation: cue-breathe 3.2s var(--ease-soft) infinite;
 }
 
-/* ── Revealed content ──────────────────────────────────────────────────────
-   Arrives only once the image has finished opening.                         */
+@keyframes cue-breathe {
+  0%, 100% { opacity: .55; transform: translateY(0); }
+  50%      { opacity: 1;   transform: translateY(4px); }
+}
+
+/* ── Supporting copy, on pine below the photograph ─────────────────────── */
 
 .hero__after {
   position: relative;
   padding-inline: clamp(0.75rem, 1.6vw, 1.5rem);
-  opacity: clamp(0, calc((var(--p) - 0.72) * 4), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p) - 0.72) * 4), 1)) * 1.5rem));
 }
 
 .hero__inner {
@@ -191,13 +135,10 @@
   max-width: 60rem;
 }
 
-/* Reduced motion: no reveal at all. The track collapses, the hero renders in
-   its open state, and nothing moves. Same destination, no journey. */
+/* Reduced motion: the cue stops breathing. Everything else in this hero is
+   static by construction now, so there is nothing else to suppress. */
 @media (prefers-reduced-motion: reduce) {
-  .js .hero__track { height: auto; }
-  .js .hero__stage { position: relative; }
-  .hero { --p: 1 !important; }
-  .hero__cue { display: none; }
+  .hero__cue { animation: none; opacity: .8; }
 }
 
 /* The eyebrow sits on pine below the stage now, so brass would be legal —

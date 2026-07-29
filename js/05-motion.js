@@ -1,6 +1,5 @@
 /* ============================================================================
-   05-motion.js — Lenis smooth scroll, the mobile CTA bar, and the
-   experiences-rail autoplay
+   05-motion.js — the mobile CTA bar, and the experiences-rail autoplay
    ========================================================================= */
 
 window.TC = window.TC || {};
@@ -8,57 +7,21 @@ window.TC = window.TC || {};
 (function (TC) {
   'use strict';
 
-  function initLenis() {
-    /* Four guards, all of them load-bearing:
+  /* ── On smooth scrolling ──────────────────────────────────────────────────
+     There was a Lenis (JS smooth-scroll) integration here. It is gone, and
+     that is deliberate.
 
-       reduced motion  — smooth scrolling is motion, and some people get
-                         motion sick from it.
-       pointer: fine   — never on touch. iOS momentum scrolling is better
-                         than any JS emulation of it, and hijacking it feels
-                         broken on a phone.
-       window.Lenis    — if the CDN is blocked or down, native scrolling just
-                         carries on. That is the whole reason for choosing a
-                         library that drives real scrollTop rather than
-                         transforming a wrapper: sticky positioning, anchor
-                         links, scroll-driven CSS and find-in-page all keep
-                         working when it isn't there. */
+     Every JS smooth-scroll works the same way: it swallows the native scroll
+     and re-drives scrollTop itself, one animation frame behind your input.
+     Tuned well it feels expensive; tuned at all it still cannot be as
+     immediate as the compositor-driven scrolling the browser does off the
+     main thread. And when anything else on the page occupies the main
+     thread, the interpolation stalls while native scrolling would not — so
+     the very thing added for smoothness becomes the thing that stutters.
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    if (typeof window.Lenis !== 'function') return;
-
-    /* duration+easing runs a fixed-length tween per scroll gesture, and this
-       curve (like most "expensive" ease-outs) starts at near-zero velocity —
-       maybe 50ms of almost no visible movement before it accelerates. A
-       trackpad or wheel fires a new gesture every couple of frames, so that
-       slow-start replays constantly, and it reads as "I scrolled and nothing
-       happened for a beat" rather than as smoothing. lerp mode has no such
-       thing: every frame moves the visible position a fixed fraction of the
-       remaining distance toward the input, so it starts responding on the
-       very next frame and never re-plays a launch animation. Higher lerp =
-       tighter tracking to the input; 0.15 is smoothed but not delayed. */
-    var lenis = new window.Lenis({
-      lerp: 0.15,
-      wheelMultiplier: 1,
-      smoothWheel: true
-    });
-
-    /* Lenis's docs call this out explicitly: native CSS smooth-scrolling and
-       Lenis both try to own the scroll position, and running both at once is
-       a documented source of stutter — two easing curves fighting over the
-       same scrollTop. `scroll-behavior: smooth` in 02-base.css stays as the
-       fallback for no-JS, reduced-motion and touch (where Lenis never
-       starts); it only steps aside once Lenis is confirmed running. */
-    document.documentElement.classList.add('has-lenis');
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    TC.lenis = lenis;
-  }
+     Native scrolling is smooth. `scroll-behavior: smooth` in 02-base.css
+     still eases the anchor-link jumps, which is the one place a tween
+     genuinely helps.                                                       */
 
   function initMobileBar() {
     var bar = document.querySelector('[data-mobile-bar]');
@@ -193,7 +156,6 @@ window.TC = window.TC || {};
   }
 
   function init() {
-    initLenis();
     initMobileBar();
     initRailAutoplay();
   }

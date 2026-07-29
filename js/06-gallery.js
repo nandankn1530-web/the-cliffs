@@ -138,14 +138,12 @@ window.TC = window.TC || {};
       requestAnimationFrame(function () { box.classList.add('is-open'); });
       render(list);
       document.body.style.overflow = 'hidden';
-      if (TC.lenis) TC.lenis.stop();
       btnClose.focus();
     }
 
     function close() {
       box.classList.remove('is-open');
       document.body.style.overflow = '';
-      if (TC.lenis) TC.lenis.start();
       hideTimer = window.setTimeout(function () { box.hidden = true; }, 420);
       if (opener) opener.focus();
       opener = null;
