@@ -49,6 +49,100 @@
 
 .js .hero__stage { --hp: 0; position: sticky; top: 0; }
 
+/* ── The sky ───────────────────────────────────────────────────────────────
+   What the closed window sits on. This was a flat pine ground; it is now an
+   altitude sky, which is both what the section is about and what the rest of
+   the page keeps promising ("above the cloud line").
+
+   The vertical ramp is doing real work, not just decoration. Two light
+   things sit on this: the glass nav across the top, and the ends of the
+   headline where it overhangs the window. So the sky is deliberately deep
+   at the top — where the nav is — and only opens out to a bright cloud sea
+   lower down, past everything that needs to stay readable. A uniformly
+   bright sky would have put cream text on near-white and lost both.
+
+   The first gradient is a short top scrim: at scroll 0 the nav has not yet
+   gone solid, so its translucent fill is sampling this, and glass over an
+   undarkened sky put the nav links around 3.9:1.                           */
+.hero__sky {
+  position: absolute;
+  inset: 0;
+  z-index: -2;              /* behind .hero__frame, which is -1 */
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(10, 30, 45, .55) 0%, rgba(10, 30, 45, 0) 22%),
+    linear-gradient(to bottom,
+      #2E5A7A 0%,
+      #6F9BBB 38%,
+      #B9D3E2 68%,
+      #E8F1F6 100%);
+}
+
+/* ── Cloud layers ──────────────────────────────────────────────────────────
+   Three bands drifting at different speeds, which is what reads as depth —
+   one layer moving alone reads as a texture sliding, not as weather.
+
+   The seamless loop is the whole trick here. Each layer is twice the width
+   of the stage with `background-size: 50% 100%` and `repeat-x`, so the puffs
+   tile exactly once per stage-width. Translating by -50% therefore lands on
+   a pixel-identical position and the animation can restart invisibly. Get
+   that arithmetic wrong by any amount and the clouds visibly jump once per
+   cycle.
+
+   Transform only — these stay on the compositor and never touch layout.
+   No `will-change`: three permanently promoted layers for background
+   decoration is exactly the trade 06-motion.css warns against, and the
+   browser composites an animated transform without being asked.           */
+.hero__clouds {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  background-repeat: repeat-x;
+  background-size: 50% 100%;
+  animation: cloud-drift linear infinite;
+}
+
+@keyframes cloud-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* High, small, slow, and thin — distance. */
+.hero__clouds--far {
+  top: 6%;
+  height: 30%;
+  opacity: .45;
+  animation-duration: 210s;
+  background-image:
+    radial-gradient(ellipse 15% 40% at 11% 58%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 10% 28% at 25% 42%, rgba(255,255,255,.75), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 18% 36% at 61% 54%, rgba(255,255,255,.8), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 12% 25% at 82% 38%, rgba(255,255,255,.65), rgba(255,255,255,0) 100%);
+}
+
+.hero__clouds--mid {
+  top: 26%;
+  height: 40%;
+  opacity: .6;
+  animation-duration: 140s;
+  background-image:
+    radial-gradient(ellipse 22% 44% at 20% 56%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 15% 32% at 36% 40%, rgba(255,255,255,.8), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 25% 46% at 72% 60%, rgba(255,255,255,.85), rgba(255,255,255,0) 100%);
+}
+
+/* Low, wide, fastest — the cloud sea you are looking down onto. */
+.hero__clouds--near {
+  top: 52%;
+  height: 48%;
+  opacity: .75;
+  animation-duration: 95s;
+  background-image:
+    radial-gradient(ellipse 32% 50% at 16% 60%, rgba(255,255,255,.95), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 26% 42% at 52% 48%, rgba(255,255,255,.85), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 34% 52% at 86% 62%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%);
+}
+
 /* The window. inset() rather than the reference's polygon() because it
    expresses the identical shape — inset(25%) is exactly that polygon — and
    unlike polygon() it takes `round`, so the window can carry the site's
@@ -123,11 +217,13 @@
    just makes the photo muddy. This darkens only the band the words occupy,
    and falls off to nothing well before the frame edge.
 
-   It fades in with the window. Closed, most of the headline overhangs the
-   window onto the pine ground, which is already 10.33:1 — a full-strength
-   pool there would sit on the pine as a visible dark smudge, solving a
-   contrast problem that does not exist yet. Open, the headline is on bare
-   photograph and needs all of it.                                          */
+   It carries most of its strength even when closed. That is a change from
+   when this sat on pine: pine was already 10.33:1 behind the overhanging
+   ends of the headline, so the pool could afford to fade almost out. The
+   sky is light by design, and cream on mid-sky is 2.4:1 — so the pool is
+   now what makes the headline legible at scroll 0, not a refinement on top
+   of a ground that was already dark. 0.55 puts it at 5.2:1; going lower
+   drops the ends of the headline below AA for large text.                  */
 .hero__title::before {
   content: '';
   position: absolute;
@@ -137,7 +233,7 @@
   inset: -70% -8%;
   z-index: -1;
   pointer-events: none;
-  opacity: calc(0.3 + 0.7 * var(--hp));
+  opacity: calc(0.55 + 0.45 * var(--hp));
   background: radial-gradient(
     ellipse 48% 40% at 50% 50%,
     rgba(8, 20, 16, .72) 0%,
@@ -158,16 +254,25 @@
   right: 0;
   text-align: center;
   bottom: clamp(1.5rem, 5vh, 3rem);
-  color: rgba(251, 249, 245, .88);
-  text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .55);
+  /* Deep slate, not cream. The cue sits at the foot of the frame, which is
+     the brightest part of the sky — the cloud sea. Cream on that was cream
+     on near-white, i.e. invisible. This is 13:1 there. */
+  color: rgba(18, 42, 58, .82);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, .45);
   pointer-events: none;
-  /* A slow breath, so it reads as an invitation rather than a label. */
+  /* Gone well before the window is fully open, because by then it is over
+     bare photograph, where a dark cue would disappear as surely as a light
+     one did on the cloud sea. Its job is finished by then anyway. */
+  opacity: clamp(0, calc(1 - var(--hp) * 2.2), 1);
+  /* A slow breath, so it reads as an invitation rather than a label.
+     Transform only — opacity above is scroll-driven, and an animation
+     touching opacity would win over it and pin the cue visible. */
   animation: cue-breathe 3.2s var(--ease-soft) infinite;
 }
 
 @keyframes cue-breathe {
-  0%, 100% { opacity: .55; transform: translateY(0); }
-  50%      { opacity: 1;   transform: translateY(4px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
 }
 
 /* ── Supporting copy, on pine below the photograph ─────────────────────── */
@@ -189,6 +294,8 @@
   .js .hero__track { height: auto; }
   .js .hero__stage { position: relative; --hp: 1; }
   .hero__cue { display: none; }
+  /* The sky stays, the weather stops. */
+  .hero__clouds { animation: none; }
 }
 
 /* The eyebrow sits on pine below the stage now, so brass would be legal —
