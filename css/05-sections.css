@@ -196,19 +196,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s-2);
+  /* No gap: --lh-display (0.98) already sets the leading, and adding 8px on
+     top of it opened the two lines into two separate statements instead of
+     one headline. */
+  gap: 0;
   text-align: center;
   color: var(--cream-lift);
   pointer-events: none;
-  /* A single soft 40px blur spreads the darkening too thin to hold an edge
-     against the photo's brightest mist. Layered instead: a tight, near-solid
-     pass right at the glyph edge for a crisp outline, then two wider, softer
-     passes for the ambient glow — legible over any patch of sky or mist,
-     not just the parts sampled when the scrim was tuned. */
+
+  /* Overrides the global h1 setting — see the --hero-* block in
+     01-tokens.css for why this one heading is set differently. */
+  font-variation-settings: 'opsz' var(--hero-opsz);
+  font-weight: var(--hero-wght);
+  letter-spacing: var(--ls-hero);
+
+  /* Three soft passes rather than a tight near-solid one. At 48–112px a
+     3px-blur shadow sits right at the glyph edge and reads as a cheap
+     stroke around the letterforms; the heavier weight above is now doing
+     that job properly, so these only have to supply atmospheric separation
+     from whatever is behind. */
   text-shadow:
-    0 1px 3px rgba(8, 20, 16, .85),
-    0 4px 18px rgba(8, 20, 16, .6),
-    0 12px 44px rgba(10, 46, 38, .45);
+    0 1px 2px rgba(8, 20, 16, .5),
+    0 6px 24px rgba(8, 20, 16, .5),
+    0 16px 56px rgba(10, 46, 38, .38);
 }
 
 /* ── The headline's own pool of shade ──────────────────────────────────────

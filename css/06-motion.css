@@ -303,7 +303,13 @@
    scrolled. Transform would have fought the horizontal split the same way.
 
    The entrance those properties provided is redundant now anyway: the hero
-   already opens with the reveal. One entrance is enough.                     */
+   already opens with the window. One entrance is enough.
+
+   The landing value must stay in step with .hero__title's own
+   letter-spacing. `forwards` means this keyframe, not the rule, decides
+   where the tracking ends up — so if the two ever disagree, the rule is
+   silently ignored and the headline settles to the wrong tracking. Both
+   now read --ls-hero.                                                       */
 
 .js .hero__title {
   letter-spacing: 0.04em;
@@ -311,7 +317,7 @@
 }
 
 @keyframes hero-settle {
-  to { letter-spacing: var(--ls-display); }
+  to { letter-spacing: var(--ls-hero); }
 }
 
 

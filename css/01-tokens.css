@@ -47,16 +47,17 @@
      even under a heavy scrim.
 
      DARK GROUNDS ONLY, like brass and stone — it is used on exactly one
-     element, the italic half of the hero headline, which sits on either the
-     pooled photograph or the pine ground. 8.66:1 on pine.
+     element, the italic half of the hero headline, which sits on the pooled
+     sky or the pooled photograph. 3.78:1 against the lightest case, the
+     pooled mid-sky, which clears AA for large text with room to spare.
 
-     It went to #FBF1DF while the headline was fighting bare mist, which was
-     safe but so close to cream that the two-tone stopped reading as two
-     tones at all. The window now guarantees the headline a dark backing at
-     every scroll position, so the accent can afford to be properly gold
-     again — which is what makes the pairing look deliberate rather than
-     like a rendering inconsistency.                                        */
-  --sand: #F2DCB3;
+     Warmed from #F2DCB3 now that the ground behind it is blue rather than
+     pine. A pale gold reads as gold against green, which is already warm;
+     against a cool sky the same value drifts back towards "slightly yellow
+     white" and the two-tone stops reading as two tones. Champagne rather
+     than brass, though — gold and blue is a strong enough pairing on its
+     own that a brighter value would tip it from considered to gaudy.      */
+  --sand: #EBD3A0;
 
   /* Two axes, because one is not enough on a bright photograph. The vertical
      pass seats the booking bar and darkens the sky behind the glass nav; the
@@ -139,6 +140,25 @@
   --lh-heading: 1.08;
   --lh-body:    1.75;
   --ls-display: -0.015em;    /* Didones want near-zero tracking at size */
+
+  /* --- The hero headline ------------------------------------------------
+     Set apart from the rest of the display type, because it is the only
+     heading on the site that does not sit on a flat ground — it lies over
+     sky, moving cloud and a photograph.
+
+     opsz is the whole point. Bodoni's optical-size axis makes the hairlines
+     thinner as it climbs, so 96 is "correct" for display sizes on paper and
+     precisely wrong over imagery: those hairlines are what disappear into a
+     bright cloud. Dropping to 68 and taking the weight to 500 keeps it
+     unmistakably Didone while giving the thin strokes enough body to hold
+     against anything behind them.
+
+     Tighter tracking than --ls-display for the same reason it is set larger:
+     at this size the letterforms need to knit into words rather than sit as
+     separate shapes.                                                       */
+  --hero-opsz: 68;
+  --hero-wght: 500;
+  --ls-hero:   -0.028em;
   --ls-label:   0.16em;
 
   /* --- Spacing — 8px base ----------------------------------------------- */
