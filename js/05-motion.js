@@ -1,5 +1,6 @@
 /* ============================================================================
-   05-motion.js — Lenis smooth scroll, and the mobile CTA bar
+   05-motion.js — Lenis smooth scroll, the mobile CTA bar, and the
+   experiences-rail autoplay
    ========================================================================= */
 
 window.TC = window.TC || {};
@@ -96,9 +97,83 @@ window.TC = window.TC || {};
     if (mq.addEventListener) mq.addEventListener('change', syncPad);
   }
 
+  /* ── Experiences rail autoplay ────────────────────────────────────────────
+     The rail (04-components.css) is a real native scroll-snap carousel —
+     drag, swipe, wheel and arrow keys all work with JS disabled. What it
+     didn't have was motion of its own: nothing moved until a visitor
+     physically dragged it, which reads as "stuck" to anyone who never tries.
+
+     This drifts it sideways on its own — slow, continuous, no fixed
+     duration — and reverses direction at each end rather than jump-cutting
+     back to the start, since there are only five cards and no duplicated
+     set to loop over seamlessly. Any real input (pointer, touch, wheel,
+     keyboard) pauses it immediately and hands control back for a couple of
+     seconds before it resumes, so it never fights a visitor trying to
+     browse at their own pace. */
+  function initRailAutoplay() {
+    var rail = document.querySelector('.rail');
+    if (!rail) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var SPEED     = 34;    /* px per second */
+    var RESUME_MS = 2200;  /* pause length after the visitor lets go */
+
+    var direction   = 1;
+    var paused      = false;
+    var inView      = true;
+    var resumeTimer = null;
+    var last        = null;
+
+    function pause() {
+      if (!paused) {
+        paused = true;
+        /* Hand snapping back to the browser while the visitor is in control */
+        rail.style.scrollSnapType = '';
+      }
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(function () {
+        paused = false;
+        last = null; /* re-baseline dt so the pause itself isn't counted as travel */
+        rail.style.scrollSnapType = 'none'; /* a continuous drift would fight snap points */
+      }, RESUME_MS);
+    }
+
+    ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (evt) {
+      rail.addEventListener(evt, pause, { passive: true });
+    });
+
+    /* Don't spend a rAF loop scrolling something nobody can see */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+      }, { threshold: 0.1 }).observe(rail);
+    }
+
+    function tick(time) {
+      requestAnimationFrame(tick);
+      if (last === null) { last = time; return; }
+      var dt = (time - last) / 1000;
+      last = time;
+
+      if (paused || !inView) return;
+
+      var max = rail.scrollWidth - rail.clientWidth;
+      if (max <= 0) return;
+
+      var next = rail.scrollLeft + direction * SPEED * dt;
+      if (next >= max) { next = max; direction = -1; }
+      else if (next <= 0) { next = 0; direction = 1; }
+      rail.scrollLeft = next;
+    }
+
+    rail.style.scrollSnapType = 'none';
+    requestAnimationFrame(tick);
+  }
+
   function init() {
     initLenis();
     initMobileBar();
+    initRailAutoplay();
   }
 
   if (document.readyState === 'loading') {

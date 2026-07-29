@@ -316,43 +316,17 @@
 
 
 /* ═══ Experiences rail ═════════════════════════════════════════════════════
-   Base is a plain native scroll-snap carousel that works everywhere. Where
-   scroll-driven animations exist, the section pins and the rail translates
-   horizontally as the page scrolls vertically.                               */
+   A native scroll-snap carousel (04-components.css) that works everywhere,
+   autoplaying on its own via js/05-motion.js — a slow continuous drift that
+   pauses the instant a visitor drags, swipes or scrolls it and hands control
+   straight back. See initRailAutoplay() there for the mechanics.
 
-@supports (animation-timeline: view()) {
-  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-    .exp__rail-wrap {
-      height: 320vh;
-    }
-    .exp__pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      /* `hidden` (not `clip`) would make this box a scroll container per the
-         CSS Overflow spec — and .rail's `animation-timeline: view()` below
-         binds to the *nearest* scroll-container ancestor. Nothing ever
-         actually scrolls this box, so with `hidden` the timeline locks onto
-         a scroller that never moves and the whole rail freezes on its first
-         frame. `clip` clips the same overflow without registering as a
-         scroll container, so the timeline correctly falls through to the
-         real page scroll instead. */
-      overflow: clip;
-    }
-    .exp__pin .rail {
-      overflow: visible;
-      animation: rail-slide linear both;
-      animation-timeline: view(block);
-      animation-range: contain 0% contain 100%;
-    }
-    @keyframes rail-slide {
-      from { transform: translateX(4vw); }
-      to   { transform: translateX(calc(-100% + 88vw)); }
-    }
-  }
-}
+   This used to pin the section for 320vh and tie the rail's horizontal
+   position to the page's vertical scroll via `animation-timeline: view()`.
+   That required the visitor to keep scrolling the whole page just to see
+   five cards go by, which read as "stuck" to anyone who didn't, and it only
+   ever ran on the subset of browsers supporting scroll-driven animations —
+   autoplay moves on its own, everywhere, with no scroll gesture required. */
 
 
 /* ═══ Gallery reveal ═══════════════════════════════════════════════════════
