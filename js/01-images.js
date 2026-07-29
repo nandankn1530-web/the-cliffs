@@ -21,8 +21,6 @@ window.TC = window.TC || {};
   TC.IMAGES = {
     'hero-cloudline':      { w: 1920, h: 1280, credit: 'Timothy A. Gonsalves · CC BY-SA 4.0',
                              caption: 'Cloud moving through the ridges below the house.' },
-    'hero-reveal':         { w: 1440, h: 960,  credit: 'Basile Morin · CC BY-SA 4.0',
-                             caption: 'The pool terrace at dusk.' },
     'place-road':          { w: 1280, h: 853,  credit: 'Timothy A. Gonsalves · CC BY-SA 4.0',
                              caption: 'The last of the estate road.' },
     'place-band':          { w: 1920, h: 1280, credit: 'Vivek Kumar · CC0',

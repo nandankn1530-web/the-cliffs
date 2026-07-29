@@ -162,10 +162,19 @@
   margin: 0 var(--gutter) var(--gutter);
   padding: var(--s-3);
   border-radius: var(--r-card);
-  background: var(--glass);
+  /* A recessed panel, not glass.
+
+     Glass was right when this bar straddled the hero photograph — there was
+     something behind it worth seeing. It now sits on flat pine, where a
+     white 10% fill has nothing to reveal and only lightens the ground:
+     enough to drop the brass field labels to 3.73:1, under the 4.5:1 that
+     11px text needs. Going darker than the section instead reads as a panel
+     set into the page and takes those labels to 5.7:1.
+
+     backdrop-filter goes with it. Blurring a flat colour produces that same
+     flat colour, so it was paying for a filter pass to change nothing. */
+  background: var(--glass-deep);
   border: 1px solid var(--glass-brd);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
 }
 
 @media (min-width: 880px) {

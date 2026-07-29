@@ -29,7 +29,6 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | Slot | Widths | Native | Used in | Alt class | Replacement note |
 |---|---|---|---|---|---|
 | `hero-cloudline` | 1280 · 1920 | 1920×1280 | §1 hero **background**, preloaded | atmospheric | The single most important shot. Wants a wide, layered view with cloud actually moving through the ridges — not a clear-day panorama. Landscape, 3:2 minimum. |
-| `hero-reveal` | 960 · 1440 | 1440×960 | §1 the image that **opens** on scroll | informative | ⚠️ Amantaka, Laos — same photograph as `gallery-pool`, given its own slot so the hero can be re-shot without touching the gallery. Replace with the single best picture of the property: the one thing you'd want a guest to see first. It opens from a small portrait card to a wide letterbox, so the subject must survive **both** crops — keep it centred. |
 | `place-road` | 1280 | 1280×853 | §2 The Place | atmospheric | The approach road. Should feel like arriving, not like a landscape. |
 | `place-band` | 1920 | 1920×1280 | §2 pinned band | atmospheric | Full-bleed band. Needs to work cropped very wide. |
 | `location-ridges` | 1920 | 1920×1080 | §6 Location | informative | Show the actual terrain guests will drive through. |

@@ -38,6 +38,10 @@
   --glass:      rgba(255, 255, 255, .10);
   --glass-hi:   rgba(255, 255, 255, .16);  /* hover                          */
   --glass-brd:  rgba(255, 255, 255, .22);
+  /* For panels that sit on a dark ground rather than over photography, where
+     a white fill has nothing to reveal and only costs contrast. Darker than
+     the surface it sits on, so small type over it gains rather than loses. */
+  --glass-deep: rgba(6, 26, 21, .30);
   --glass-ink:  rgba(255, 255, 255, .70);  /* labels inside glass            */
   --nav-stuck:  rgba(14, 64, 52, .92);     /* nav once it leaves the hero    */
 

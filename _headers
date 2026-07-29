@@ -33,8 +33,48 @@
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# CONTENT-SECURITY-POLICY — notes for the header at the bottom of this file.
+#
+# Worth writing now specifically because removing the Lenis CDN left this
+# site with exactly two external origins, both Google Fonts — so the policy
+# can be tight rather than a list of exceptions that defeats the point.
+#
+#   script-src 'self'      every script is a local file. No inline handlers
+#                          anywhere, and the one inline <script> in <head>
+#                          (adding the .js class) is allowed by hash rather
+#                          than by 'unsafe-inline', which would hand back
+#                          most of what CSP is for.
+#
+#                          ⚠ THE HASH IS OF THAT SCRIPT'S EXACT BYTES. Edit
+#                          it — even the whitespace — and the browser blocks
+#                          it. That fails safe (no .js class means content
+#                          renders unanimated rather than invisible, and the
+#                          hero renders open) but it fails silently, so
+#                          recompute the hash if you touch that line:
+#                            printf %s "SCRIPT_BODY" | openssl dgst -sha256 -binary | openssl base64
+#
+#   style-src              stylesheets are local; fonts.googleapis.com serves
+#                          the @font-face CSS. 'unsafe-inline' is required
+#                          because the page uses style="--i:N" attributes on
+#                          gallery cells and CSP treats those as inline
+#                          styles. It is a real weakening, but style-only:
+#                          it cannot execute script.
+#   font-src               the WOFF2s themselves come from gstatic.
+#   img-src data:          the lightbox preloads Image() objects from
+#                          same-origin paths; data: covers the inline SVG
+#                          favicon.
+#   frame-ancestors 'none' the modern X-Frame-Options, which stays below for
+#                          older browsers that ignore this.
+#   form-action 'none'     there is no form on this site. If one is ever
+#                          added, this line must change or it will silently
+#                          block the submit.
+#
+# Everything below must stay contiguous under /* — a blank line ends the
+# block in Netlify's parser and would orphan the headers after it.
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; base-uri 'self'; frame-ancestors 'none'; form-action 'none'; object-src 'none'

@@ -93,6 +93,32 @@
    No `will-change`: three permanently promoted layers for background
    decoration is exactly the trade 06-motion.css warns against, and the
    browser composites an animated transform without being asked.           */
+/* Cloud thins out through the band the headline occupies.
+
+   Without this the headline's legibility *fluctuates*, which is worse than
+   being consistently poor: a white puff drifting behind the italic line took
+   it to 2.37:1, under the 3:1 floor for large text, and then back out again.
+   Text that fades in and out as the weather passes reads as a rendering
+   fault rather than as a design.
+
+   Masking the cloud rather than darkening the gold keeps both the sky airy
+   and the accent warm — dulling the gold enough to survive a white cloud
+   would have taken it back to the yellowish-white it was rescued from.
+   The ramps are wide, so the cloud reads as parting rather than as hitting
+   an invisible edge.                                                        */
+.hero__weather {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(to bottom,
+    #000 0%, #000 30%,
+    rgba(0, 0, 0, .18) 40%, rgba(0, 0, 0, .18) 62%,
+    #000 72%, #000 100%);
+  mask-image: linear-gradient(to bottom,
+    #000 0%, #000 30%,
+    rgba(0, 0, 0, .18) 40%, rgba(0, 0, 0, .18) 62%,
+    #000 72%, #000 100%);
+}
+
 .hero__clouds {
   position: absolute;
   left: 0;
@@ -232,8 +258,14 @@
    ends of the headline, so the pool could afford to fade almost out. The
    sky is light by design, and cream on mid-sky is 2.4:1 — so the pool is
    now what makes the headline legible at scroll 0, not a refinement on top
-   of a ground that was already dark. 0.55 puts it at 5.2:1; going lower
-   drops the ends of the headline below AA for large text.                  */
+   of a ground that was already dark.
+
+   0.7, not the 0.55 it was first set to, so that the headline still clears
+   3:1 on a browser with no mask-image support, where .hero__weather above
+   cannot thin the cloud and a white puff passes behind the text at full
+   strength. With the mask working this is more headroom than strictly
+   needed; without it, it is the only thing standing between the accent
+   line and 2.9:1.                                                          */
 .hero__title::before {
   content: '';
   position: absolute;
@@ -243,7 +275,7 @@
   inset: -70% -8%;
   z-index: -1;
   pointer-events: none;
-  opacity: calc(0.55 + 0.45 * var(--hp));
+  opacity: calc(0.7 + 0.3 * var(--hp));
   background: radial-gradient(
     ellipse 48% 40% at 50% 50%,
     rgba(8, 20, 16, .72) 0%,
