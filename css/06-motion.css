@@ -331,7 +331,15 @@
       height: 100vh;
       display: flex;
       align-items: center;
-      overflow: hidden;
+      /* `hidden` (not `clip`) would make this box a scroll container per the
+         CSS Overflow spec — and .rail's `animation-timeline: view()` below
+         binds to the *nearest* scroll-container ancestor. Nothing ever
+         actually scrolls this box, so with `hidden` the timeline locks onto
+         a scroller that never moves and the whole rail freezes on its first
+         frame. `clip` clips the same overflow without registering as a
+         scroll container, so the timeline correctly falls through to the
+         real page scroll instead. */
+      overflow: clip;
     }
     .exp__pin .rail {
       overflow: visible;
