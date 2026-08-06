@@ -41,7 +41,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | `exp-waterfall` | 1280 | 1280×853 | §4 rail panel | atmospheric | |
 | `exp-coffee` | 1280 | 1280×853 | §4 rail panel | informative | South Indian filter coffee. |
 | `exp-spa` | 1280 | 1280×853 | §4 rail panel | informative | ⚠️ Amantaka, Laos. |
-| `gallery-cliff-figure` | 960 · 1920 | 1920×1080 | §5 mosaic, feature cell | atmospheric | **The anchor image** — a lone figure on a clifftop at dusk. Whatever replaces it must carry the same "this is the edge" feeling; the gallery is built around it. |
+| `gallery-cliff-figure` | 960 · 1920 | 1920×1080 | §5 mosaic feature cell **and** §1 hero foreground plane | atmospheric | **The anchor image** — a lone figure on a clifftop at dusk. Whatever replaces it must carry the same "this is the edge" feeling; the gallery is built around it. ⚠️ The hero keys the sky out of this in the browser (contrast + multiply, see `.hero__figure`), which only works because the subject is near-black against a plain pale sky. A replacement shot without that separation will key badly and needs a pre-cut transparent PNG instead. |
 | `gallery-mist-layers` | 960 · 1920 | 1920×1446 | §5 mosaic | atmospheric | |
 | `gallery-suite-bed` | 960 · 1920 | 1920×1440 | §5 mosaic | informative | ⚠️ Amantaka, Laos. |
 | `gallery-lounge-dusk` | 960 · 1920 | 1920×1371 | §5 mosaic | informative | ⚠️ Amantaka, Laos. |

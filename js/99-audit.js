@@ -73,14 +73,22 @@ window.TC = window.TC || {};
         problems++;
         console.warn('Missing width/height — causes layout shift: ' + where);
       }
-      /* The hero must not be lazy: it is the LCP candidate and is preloaded. */
-      var isHero = im.getAttribute('data-slot') === 'hero-cloudline';
-      if (!isHero && im.loading !== 'lazy') {
+      /* Anything inside #hero is on screen at first paint, so lazy is wrong
+         for all of it — not just the LCP candidate. Testing for the section
+         rather than for one slot name means adding a plane to the hero
+         parallax does not silently start tripping the below-the-fold
+         warning, which is what happened when the clifftop plane landed. */
+      var isAboveFold = !!(im.closest && im.closest('#hero'));
+      if (!isAboveFold && im.loading !== 'lazy') {
         console.warn('Below the fold but not lazy: ' + where);
       }
-      if (isHero && im.loading === 'lazy') {
+      if (isAboveFold && im.loading === 'lazy') {
         problems++;
-        console.warn('The hero is lazy-loaded — this defeats the preload.');
+        console.warn(
+          'Lazy-loaded but above the fold: ' + where +
+          ' — it is on screen at first paint, and for the preloaded hero ' +
+          'this also defeats the preload.'
+        );
       }
       /* Over-serving: rendered much smaller than the file actually is */
       if (im.naturalWidth && im.clientWidth && im.naturalWidth > im.clientWidth * 2.2) {

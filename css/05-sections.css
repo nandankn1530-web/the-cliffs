@@ -3,11 +3,13 @@
    ========================================================================= */
 
 /* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
-   A four-plane parallax. The ridge, a band of high haze, the place name and
-   a near cloud bank each travel a different distance as the stage is
-   scrolled past, in the reference component's 70 / 55 / 40 / 10 ratio — the
-   differential is the entire effect, so those proportions matter more than
-   the absolute numbers.
+   A parallax of three planes: the misty ridges, the place name, and the
+   clifftop with a figure standing on it. Each travels a different distance
+   as the stage is scrolled past — the differential is the entire effect, so
+   the proportions matter more than the absolute numbers.
+
+   The photograph is left clean. An earlier pass laid CSS cloud and haze
+   over it, which fought a picture that is already almost entirely weather.
 
    Everything is driven by one custom property, --hp (0 → 1), written to
    .hero__stage by js/08-hero-scroll.js. Each plane's travel is a calc() off
@@ -64,13 +66,6 @@
   transform: translate3d(0, calc(var(--hp) * 22vh), 0);
 }
 
-.hero__layer--2 {
-  top: -20vh;
-  z-index: 1;
-  opacity: .5;
-  transform: translate3d(0, calc(var(--hp) * 17vh), 0);
-}
-
 /* The name. Centred by grid rather than by a translate, so the parallax
    transform below is the only thing on the property and the two cannot
    fight over it. */
@@ -82,10 +77,19 @@
   transform: translate3d(0, calc(var(--hp) * 12vh), 0);
 }
 
+/* The blend lives on the plane, not on the <img> inside it. An element only
+   blends with the backdrop of its own parent stacking context, and the
+   parallax transform on this element makes it one — so `mix-blend-mode` on
+   the image would have found nothing behind it but this empty box and done
+   nothing at all, silently, leaving the keyed-out sky opaque. On the plane
+   itself the backdrop is the ridges and the scrim, which is what it needs
+   to multiply against. .hero__stage's `isolation: isolate` keeps the blend
+   from reaching further down the page than the hero. */
 .hero__layer--4 {
   top: -6vh;
   z-index: 4;
   transform: translate3d(0, calc(var(--hp) * 3vh), 0);
+  mix-blend-mode: multiply;
 }
 
 .hero__bg {
@@ -94,8 +98,8 @@
   object-fit: cover;
 }
 
-/* Sits above the ridge and the haze but below the name, so it darkens the
-   photograph without dulling the type that has to read against it. */
+/* Sits above the ridges but below the name, so it darkens the photograph
+   without dulling the type that has to read against it. */
 .hero__scrim {
   position: absolute;
   inset: 0;
@@ -103,57 +107,31 @@
   background: var(--scrim);
 }
 
-/* ── Drifting cloud ────────────────────────────────────────────────────────
-   Horizontal drift on top of the vertical parallax: the planes separate as
-   you scroll, and the cloud keeps moving whether you scroll or not.
+/* ── The clifftop, keyed out of its own sky ────────────────────────────────
+   The reference's foreground plane is a pre-cut WebP with a transparent
+   sky. This library has no such plate — but the source photograph is a
+   near-black silhouette against a plain pale sky, which is the one case
+   where a cutout can be recovered in the browser rather than in Photoshop.
 
-   The seamless loop is the trick. Each band is twice the stage width with
-   `background-size: 50% 100%` and `repeat-x`, so the puffs tile exactly
-   once per stage-width and translating by -50% lands on a pixel-identical
-   position. Get that arithmetic wrong by any amount and the cloud visibly
-   jumps once per cycle.
+   contrast() pushes the two ends apart: the sky, already above mid-grey,
+   is driven to white, and the cliff, already close to black, is driven to
+   black. brightness() then finishes the sky off. multiply blending does
+   the rest, because multiply is neutral against white and absolute against
+   black — the sky disappears completely and the silhouette lands solid.
 
-   Transform only, so these stay on the compositor. No `will-change`:
-   permanently promoting decorative layers is the trade 06-motion.css warns
-   against, and an animated transform is composited without being asked. */
-.hero__drift {
-  position: absolute;
-  left: 0;
-  width: 200%;
-  background-repeat: repeat-x;
-  background-size: 50% 100%;
-  animation: cloud-drift linear infinite;
-}
-
-@keyframes cloud-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-
-/* High and thin, well clear of the name's band. */
-.hero__drift--far {
-  top: 14%;
-  height: 34%;
-  animation-duration: 190s;
-  background-image:
-    radial-gradient(ellipse 16% 40% at 12% 56%, rgba(255,255,255,.55), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 11% 28% at 29% 40%, rgba(255,255,255,.45), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 19% 38% at 64% 54%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 13% 26% at 85% 38%, rgba(255,255,255,.4), rgba(255,255,255,0) 100%);
-}
-
-/* The cloud line the name stands above: dense, low, and nearest the camera.
-   It starts below the name's baseline on purpose — this is the one plane
-   that passes in front of the type, and white cloud crossing the gold
-   accent is exactly how the headline lost contrast once before. */
-.hero__drift--near {
-  top: 62%;
-  height: 46%;
-  animation-duration: 90s;
-  background-image:
-    radial-gradient(ellipse 34% 52% at 15% 58%, rgba(255,255,255,.92), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 27% 44% at 51% 46%, rgba(255,255,255,.82), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 36% 54% at 86% 60%, rgba(255,255,255,.88), rgba(255,255,255,0) 100%);
+   The consequence to know about: multiply darkens whatever is beneath, so
+   this plane genuinely occludes the name where the two overlap. That is
+   the depth cue that makes the parallax read, and it is why the cliff is
+   positioned low and the name sits above the ridge line.                  */
+.hero__figure {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Biased right of centre: the figure stands at ~56% across the frame, and
+     centre-cropping a 16:9 source into a narrow viewport walks them off the
+     edge. */
+  object-position: 56% 50%;
+  filter: contrast(3) brightness(1.5);
 }
 
 /* Hands the stage over to the pine below instead of ending on a cut edge. */
@@ -251,11 +229,12 @@
   right: 0;
   text-align: center;
   bottom: clamp(1.5rem, 5vh, 3rem);
-  /* Deep slate, not cream. The cue sits at the foot of the frame, which is
-     the brightest part of the sky — the cloud sea. Cream on that was cream
-     on near-white, i.e. invisible. This is 13:1 there. */
-  color: rgba(18, 42, 58, .82);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, .45);
+  /* Back to cream. It was deep slate while the foot of the frame was a
+     bright cloud sea; the foot of the frame is now the keyed clifftop,
+     which is close to black, and dark-on-dark measured 1.2:1. Light type
+     with a dark shadow is right for every state this hero has. */
+  color: rgba(251, 249, 245, .9);
+  text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .6);
   pointer-events: none;
   /* Gone well before the window is fully open, because by then it is over
      bare photograph, where a dark cue would disappear as surely as a light
@@ -292,7 +271,6 @@
   .js .hero__track { height: auto; }
   .js .hero__stage { position: relative; }
   .hero__cue { display: none; }
-  .hero__drift { animation: none; }
 }
 
 /* The eyebrow sits on pine below the stage now, so brass would be legal —
