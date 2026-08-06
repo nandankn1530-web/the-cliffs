@@ -3,21 +3,19 @@
    ========================================================================= */
 
 /* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
-   A clip-path window that opens as you scroll.
-
-   The photograph is the stage's background from the very first frame,
-   full-bleed and already loaded — it is only *masked* to a centred window
-   that widens to the full viewport as you scroll. That is the important
-   difference from the scroll-expansion reveal this replaced, where the
-   photo genuinely was not there until you scrolled and assembled it.
+   A four-plane parallax. The ridge, a band of high haze, the place name and
+   a near cloud bank each travel a different distance as the stage is
+   scrolled past, in the reference component's 70 / 55 / 40 / 10 ratio — the
+   differential is the entire effect, so those proportions matter more than
+   the absolute numbers.
 
    Everything is driven by one custom property, --hp (0 → 1), written to
-   .hero__stage by js/08-hero-scroll.js. Every width, radius, scale and
-   opacity below is a calc() off it, so the tuning lives here with the rest
-   of the design and the JS stays a scroll listener and one style write.
+   .hero__stage by js/08-hero-scroll.js. Each plane's travel is a calc() off
+   it, so the composition is tuned here rather than in script.
 
-   --hp defaults to 1 (fully open) and is only set to 0 under `.js`, so with
-   scripts disabled the hero renders as a normal full-bleed photograph.     */
+   --hp defaults to 0 — the scene at rest, composed as designed — so with
+   scripts disabled or motion reduced the hero is simply a still photograph
+   with the name on it.                                                     */
 
 .hero {
   background: var(--pine);
@@ -26,100 +24,99 @@
   padding-inline: 0;
 }
 
-/* The track supplies the scroll distance the window needs to open. Only
+/* The track supplies the scroll distance the planes separate over. Only
    under `.js` — otherwise it is dead scroll past a static hero.
 
-   --hero-travel is the one number to change if this feels too long: it is
-   how far you scroll before the window is fully open. It is deliberately
-   shorter than the reference implementation's 1500px, because a pinned
-   hero that outlasts the visitor's patience reads as a broken scrollbar
-   rather than as an effect. */
+   --hero-travel is the one number to change if this feels too long. It is
+   deliberately shorter than the reference's 1500px, because every pixel of
+   it is scrolling that does not move the page, and too much of that reads
+   as a broken scrollbar rather than as an effect. */
 .hero__track { position: relative; }
 .js .hero__track { height: calc(100svh + var(--hero-travel)); }
 
 .hero__stage {
-  --hp: 1;
+  --hp: 0;
   position: relative;
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
+}
+
+.js .hero__stage { position: sticky; top: 0; }
+
+.hero__layers { position: absolute; inset: 0; }
+
+/* Each plane is over-tall and hangs above the stage by more than it will
+   ever travel, so sliding down can never drag its top edge into view. That
+   is what the reference needed its black-line-overflow element to hide;
+   sizing the planes correctly means there is no seam to cover in the first
+   place. */
+.hero__layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.hero__layer--1 {
+  top: -26vh;
+  z-index: 0;
+  transform: translate3d(0, calc(var(--hp) * 22vh), 0);
+}
+
+.hero__layer--2 {
+  top: -20vh;
+  z-index: 1;
+  opacity: .5;
+  transform: translate3d(0, calc(var(--hp) * 17vh), 0);
+}
+
+/* The name. Centred by grid rather than by a translate, so the parallax
+   transform below is the only thing on the property and the two cannot
+   fight over it. */
+.hero__layer--3 {
+  top: 0;
+  z-index: 3;
   display: grid;
   place-items: center;
+  transform: translate3d(0, calc(var(--hp) * 12vh), 0);
 }
 
-.js .hero__stage { --hp: 0; position: sticky; top: 0; }
+.hero__layer--4 {
+  top: -6vh;
+  z-index: 4;
+  transform: translate3d(0, calc(var(--hp) * 3vh), 0);
+}
 
-/* ── The sky ───────────────────────────────────────────────────────────────
-   What the closed window sits on. This was a flat pine ground; it is now an
-   altitude sky, which is both what the section is about and what the rest of
-   the page keeps promising ("above the cloud line").
+.hero__bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-   The vertical ramp is doing real work, not just decoration. Two light
-   things sit on this: the glass nav across the top, and the ends of the
-   headline where it overhangs the window. So the sky is deliberately deep
-   at the top — where the nav is — and only opens out to a bright cloud sea
-   lower down, past everything that needs to stay readable. A uniformly
-   bright sky would have put cream text on near-white and lost both.
-
-   The first gradient is a short top scrim: at scroll 0 the nav has not yet
-   gone solid, so its translucent fill is sampling this, and glass over an
-   undarkened sky put the nav links around 3.9:1.                           */
-.hero__sky {
+/* Sits above the ridge and the haze but below the name, so it darkens the
+   photograph without dulling the type that has to read against it. */
+.hero__scrim {
   position: absolute;
   inset: 0;
-  z-index: -2;              /* behind .hero__frame, which is -1 */
-  overflow: hidden;
-  background:
-    linear-gradient(to bottom, rgba(10, 30, 45, .55) 0%, rgba(10, 30, 45, 0) 22%),
-    linear-gradient(to bottom,
-      #2E5A7A 0%,
-      #6F9BBB 38%,
-      #B9D3E2 68%,
-      #E8F1F6 100%);
+  z-index: 2;
+  background: var(--scrim);
 }
 
-/* ── Cloud layers ──────────────────────────────────────────────────────────
-   Three bands drifting at different speeds, which is what reads as depth —
-   one layer moving alone reads as a texture sliding, not as weather.
+/* ── Drifting cloud ────────────────────────────────────────────────────────
+   Horizontal drift on top of the vertical parallax: the planes separate as
+   you scroll, and the cloud keeps moving whether you scroll or not.
 
-   The seamless loop is the whole trick here. Each layer is twice the width
-   of the stage with `background-size: 50% 100%` and `repeat-x`, so the puffs
-   tile exactly once per stage-width. Translating by -50% therefore lands on
-   a pixel-identical position and the animation can restart invisibly. Get
-   that arithmetic wrong by any amount and the clouds visibly jump once per
-   cycle.
+   The seamless loop is the trick. Each band is twice the stage width with
+   `background-size: 50% 100%` and `repeat-x`, so the puffs tile exactly
+   once per stage-width and translating by -50% lands on a pixel-identical
+   position. Get that arithmetic wrong by any amount and the cloud visibly
+   jumps once per cycle.
 
-   Transform only — these stay on the compositor and never touch layout.
-   No `will-change`: three permanently promoted layers for background
-   decoration is exactly the trade 06-motion.css warns against, and the
-   browser composites an animated transform without being asked.           */
-/* Cloud thins out through the band the headline occupies.
-
-   Without this the headline's legibility *fluctuates*, which is worse than
-   being consistently poor: a white puff drifting behind the italic line took
-   it to 2.37:1, under the 3:1 floor for large text, and then back out again.
-   Text that fades in and out as the weather passes reads as a rendering
-   fault rather than as a design.
-
-   Masking the cloud rather than darkening the gold keeps both the sky airy
-   and the accent warm — dulling the gold enough to survive a white cloud
-   would have taken it back to the yellowish-white it was rescued from.
-   The ramps are wide, so the cloud reads as parting rather than as hitting
-   an invisible edge.                                                        */
-.hero__weather {
-  position: absolute;
-  inset: 0;
-  -webkit-mask-image: linear-gradient(to bottom,
-    #000 0%, #000 30%,
-    rgba(0, 0, 0, .18) 40%, rgba(0, 0, 0, .18) 62%,
-    #000 72%, #000 100%);
-  mask-image: linear-gradient(to bottom,
-    #000 0%, #000 30%,
-    rgba(0, 0, 0, .18) 40%, rgba(0, 0, 0, .18) 62%,
-    #000 72%, #000 100%);
-}
-
-.hero__clouds {
+   Transform only, so these stay on the compositor. No `will-change`:
+   permanently promoting decorative layers is the trade 06-motion.css warns
+   against, and an animated transform is composited without being asked. */
+.hero__drift {
   position: absolute;
   left: 0;
   width: 200%;
@@ -133,87 +130,53 @@
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-/* High, small, slow, and thin — distance. */
-.hero__clouds--far {
-  top: 6%;
-  height: 30%;
-  opacity: .45;
-  animation-duration: 210s;
+/* High and thin, well clear of the name's band. */
+.hero__drift--far {
+  top: 14%;
+  height: 34%;
+  animation-duration: 190s;
   background-image:
-    radial-gradient(ellipse 15% 40% at 11% 58%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 10% 28% at 25% 42%, rgba(255,255,255,.75), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 18% 36% at 61% 54%, rgba(255,255,255,.8), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 12% 25% at 82% 38%, rgba(255,255,255,.65), rgba(255,255,255,0) 100%);
+    radial-gradient(ellipse 16% 40% at 12% 56%, rgba(255,255,255,.55), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 11% 28% at 29% 40%, rgba(255,255,255,.45), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 19% 38% at 64% 54%, rgba(255,255,255,.5), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 13% 26% at 85% 38%, rgba(255,255,255,.4), rgba(255,255,255,0) 100%);
 }
 
-.hero__clouds--mid {
-  top: 26%;
-  height: 40%;
-  opacity: .6;
-  animation-duration: 140s;
+/* The cloud line the name stands above: dense, low, and nearest the camera.
+   It starts below the name's baseline on purpose — this is the one plane
+   that passes in front of the type, and white cloud crossing the gold
+   accent is exactly how the headline lost contrast once before. */
+.hero__drift--near {
+  top: 62%;
+  height: 46%;
+  animation-duration: 90s;
   background-image:
-    radial-gradient(ellipse 22% 44% at 20% 56%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 15% 32% at 36% 40%, rgba(255,255,255,.8), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 25% 46% at 72% 60%, rgba(255,255,255,.85), rgba(255,255,255,0) 100%);
+    radial-gradient(ellipse 34% 52% at 15% 58%, rgba(255,255,255,.92), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 27% 44% at 51% 46%, rgba(255,255,255,.82), rgba(255,255,255,0) 100%),
+    radial-gradient(ellipse 36% 54% at 86% 60%, rgba(255,255,255,.88), rgba(255,255,255,0) 100%);
 }
 
-/* Low, wide, fastest — the cloud sea you are looking down onto. */
-.hero__clouds--near {
-  top: 52%;
-  height: 48%;
-  opacity: .75;
-  animation-duration: 95s;
-  background-image:
-    radial-gradient(ellipse 32% 50% at 16% 60%, rgba(255,255,255,.95), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 26% 42% at 52% 48%, rgba(255,255,255,.85), rgba(255,255,255,0) 100%),
-    radial-gradient(ellipse 34% 52% at 86% 62%, rgba(255,255,255,.9), rgba(255,255,255,0) 100%);
-}
-
-/* The window. inset() rather than the reference's polygon() because it
-   expresses the identical shape — inset(25%) is exactly that polygon — and
-   unlike polygon() it takes `round`, so the window can carry the site's
-   corner radius and lose it as it goes full-bleed. A hard-cornered
-   rectangle opening on a rounded-everything page would look unfinished. */
-.hero__frame {
+/* Hands the stage over to the pine below instead of ending on a cut edge. */
+.hero__fade {
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  clip-path: inset(
-    calc(var(--hero-clip) - var(--hero-clip) * var(--hp))
-    round
-    calc(var(--r-hero) - var(--r-hero) * var(--hp))
-  );
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 22%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(14, 64, 52, 0), var(--pine));
 }
 
-.hero__bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Pulls back as the window opens, so the frame is not merely revealing a
-     static image — the photograph settles into place with it. */
-  transform: scale(calc(1.42 - 0.42 * var(--hp)));
-}
-
-/* Inside the frame, so it is clipped with the photograph rather than
-   darkening the pine ground the closed window sits on. */
-.hero__scrim {
-  position: absolute;
-  inset: 0;
-  background: var(--scrim);
-}
 
 /* ── Title ─────────────────────────────────────────────────────────────────
    Two lines, the second italic and warm. One <h1> with continuous text for
    assistive tech.                                                          */
 
 .hero__title {
-  /* In flow, so the stage's `place-items: center` does the centring. It used
-     to be absolute and lean on its static position, which only resolved
-     correctly because the reveal card was there as an in-flow sibling. With
-     that gone there is nothing to derive a static position from, so this is
-     now explicit rather than incidental. */
+  /* In flow inside .hero__layer--3, which centres it with place-items. The
+     plane owns the parallax transform and the title owns nothing but type,
+     so the two never contend for the transform property. */
   position: relative;
   z-index: 1;
   margin: 0;
@@ -247,25 +210,17 @@
     0 16px 56px rgba(10, 46, 38, .38);
 }
 
-/* ── The headline's own pool of shade ──────────────────────────────────────
-   The scrim is a full-frame gradient, so the only way it can carry a
-   *centered* headline is by darkening the entire photograph with it, which
-   just makes the photo muddy. This darkens only the band the words occupy,
-   and falls off to nothing well before the frame edge.
+/* ── The name's own pool of shade ──────────────────────────────────────────
+   The scrim is a full-frame gradient, so the only way it can carry centred
+   type is by darkening the whole photograph, which just makes the photo
+   muddy. This darkens only the band the words occupy and falls off to
+   nothing well before the frame edge.
 
-   It carries most of its strength even when closed. That is a change from
-   when this sat on pine: pine was already 10.33:1 behind the overhanging
-   ends of the headline, so the pool could afford to fade almost out. The
-   sky is light by design, and cream on mid-sky is 2.4:1 — so the pool is
-   now what makes the headline legible at scroll 0, not a refinement on top
-   of a ground that was already dark.
-
-   0.7, not the 0.55 it was first set to, so that the headline still clears
-   3:1 on a browser with no mask-image support, where .hero__weather above
-   cannot thin the cloud and a white puff passes behind the text at full
-   strength. With the mask working this is more headroom than strictly
-   needed; without it, it is the only thing standing between the accent
-   line and 2.9:1.                                                          */
+   Held at full strength rather than tied to scroll. It was ramped with --hp
+   back when --hp meant "how open is the window"; --hp now means "how far
+   have the planes separated", and the type needs exactly as much backing at
+   the end of that as at the start. The photograph's brightest mist is what
+   this is defending against and the parallax does not move it away.        */
 .hero__title::before {
   content: '';
   position: absolute;
@@ -275,7 +230,7 @@
   inset: -70% -8%;
   z-index: -1;
   pointer-events: none;
-  opacity: calc(0.7 + 0.3 * var(--hp));
+  opacity: 1;
   background: radial-gradient(
     ellipse 48% 40% at 50% 50%,
     rgba(8, 20, 16, .72) 0%,
@@ -329,15 +284,15 @@
   max-width: 60rem;
 }
 
-/* Reduced motion: no window, no zoom, no breathing cue. The track collapses
-   so there is no pinned dead scroll either, and the hero renders as the
-   plain full-bleed photograph it resolves to anyway. Same destination. */
+/* Reduced motion: the planes never separate and the cloud never drifts. The
+   track collapses so there is no pinned dead scroll to sit through either,
+   and --hp stays at its 0 default, which is the scene already composed —
+   the same photograph with the same name on it, simply still. */
 @media (prefers-reduced-motion: reduce) {
   .js .hero__track { height: auto; }
-  .js .hero__stage { position: relative; --hp: 1; }
+  .js .hero__stage { position: relative; }
   .hero__cue { display: none; }
-  /* The sky stays, the weather stops. */
-  .hero__clouds { animation: none; }
+  .hero__drift { animation: none; }
 }
 
 /* The eyebrow sits on pine below the stage now, so brass would be legal —
@@ -355,6 +310,20 @@
   width: 32px; height: 1px;
   background: var(--brass);
   flex: none;
+}
+
+/* The line the hero used to carry as its headline. Set in the display face
+   so it still reads as a statement rather than as body copy, but well below
+   --t-hero so it supports the name overhead instead of competing with it. */
+.hero__standfirst {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: var(--ls-display);
+  color: var(--sand);
+  margin-top: var(--s-4);
+  max-width: 22ch;
 }
 
 .hero__lead {

@@ -1,33 +1,38 @@
 /* ============================================================================
-   08-hero-scroll.js — the hero window
+   08-hero-scroll.js — the hero parallax
 
-   A vanilla port of the "smooth scroll hero" pattern: a sticky stage whose
-   photograph is masked to a centred window, and the window widens to the
-   full viewport as you scroll.
+   A vanilla port of the GSAP/ScrollTrigger parallax: a sticky stage whose
+   four planes travel different distances as it is scrolled past. This file
+   supplies one number, --hp (0 → 1); 05-sections.css turns that into the
+   per-plane distances.
 
-   Three deliberate departures from the React original:
+   Four deliberate departures from the reference component:
 
-   1. No framer-motion, and no library at all. The original drove a
-      clip-path through four useTransform hooks and a motion template,
-      re-rendering a component on every scroll frame. Here the whole
-      interpolation is calc() in 05-sections.css and this file writes one
-      custom property, so scrolling costs a single style write and the
-      visual tuning lives with the rest of the design.
+   1. No GSAP and no ScrollTrigger. They are ~70KB gzipped to schedule four
+      transforms against scroll position, which is the one thing a scroll
+      listener already does. Keeping the interpolation in calc() also keeps
+      the composition next to the rest of the design rather than buried in
+      a timeline.
 
-   2. The photograph stays an <img> with srcset, not a CSS background-image
-      on two divs. It is the LCP element: as an <img> it is found by the
-      preload scanner during HTML tokenisation and it picks a resolution to
-      match the device. A background-image is invisible to the preload
-      scanner and always the same file, and the original needed two of them
-      (one per breakpoint) to do what one srcset does properly.
+   2. No Lenis. It was in this codebase and was removed on purpose: every
+      JS smooth-scroll re-drives scrollTop a frame behind the input, and
+      when anything occupies the main thread the interpolation stalls where
+      native scrolling would not. Re-adding it would bring back the exact
+      "scroll gets stuck" this project has already fixed once.
 
-   3. Progress is rounded before it is written. Three decimals is past the
-      point of visible difference in a clip-path and it keeps us from
-      writing a style on every frame during slow scrolls.
+   3. The photograph stays an <img> with srcset, not a CSS background-image.
+      It is the LCP element: as an <img> the preload scanner finds it during
+      HTML tokenisation and it picks a resolution to match the device. A
+      background-image is invisible to the preload scanner and always ships
+      the same file.
 
-   --hp defaults to 1 in CSS and is only set to 0 under `.js`, so with
-   scripts disabled or motion reduced the hero renders fully open rather
-   than stuck as a small closed window.
+   4. Progress is rounded before it is written. Three decimals is past the
+      point of visible difference in a transform, and it avoids a style
+      write on frames where nothing would change.
+
+   --hp defaults to 0 in CSS — the scene at rest — so with scripts disabled
+   or motion reduced the hero is a still photograph with the name on it,
+   rather than a half-drifted composition.
    ========================================================================= */
 
 window.TC = window.TC || {};
@@ -41,12 +46,12 @@ window.TC = window.TC || {};
     var stage = hero && hero.querySelector('.hero__stage');
     if (!hero || !track || !stage) return;
 
-    /* Reduced motion gets the open state immediately. The CSS also collapses
-       the track, so there is no pinned dead scroll to sit through either. */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      stage.style.setProperty('--hp', '1');
-      return;
-    }
+    /* Reduced motion: leave --hp at its CSS default of 0, which is the scene
+       already composed — the planes simply never separate. The CSS also
+       collapses the track, so there is no pinned dead scroll to sit through
+       either. Writing a value here would be wrong as well as unnecessary:
+       1 is the fully-drifted state, not the resting one. */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var ticking = false;
     var last = -1;

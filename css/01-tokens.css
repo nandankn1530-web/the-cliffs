@@ -171,18 +171,15 @@
   --s-5: 1.5rem;    --s-6: 2rem;      --s-7: 3rem;      --s-8: 4rem;
   --s-9: 6rem;      --s-10: 8rem;     --s-11: 12rem;
 
-  /* --- The hero window --------------------------------------------------
-     --hero-travel  how far you scroll before the window is fully open. The
-                    reference implementation used 1500px; this is shorter on
-                    purpose, because every pixel of it is scrolling that does
-                    not move the page, and too much of that reads as a broken
-                    scrollbar rather than as an effect. Raise it for a slower,
-                    more cinematic open; lower it if it ever feels sticky.
-     --hero-clip    how far in each edge of the closed window starts. 25% is
-                    the reference default and gives a centred pane at half the
-                    viewport in each axis.                                   */
+  /* --- The hero parallax -------------------------------------------------
+     --hero-travel  how far you scroll before the planes finish separating.
+                    The reference implementation used 1500px; this is shorter
+                    on purpose, because every pixel of it is scrolling that
+                    does not move the page, and too much of that reads as a
+                    broken scrollbar rather than as an effect. Raise it for a
+                    slower, more cinematic drift; lower it if it feels
+                    sticky. The per-plane distances are in 05-sections.css. */
   --hero-travel: 115vh;
-  --hero-clip:   25%;
 
   --section-y:  clamp(5rem, 11vh, 9rem);   /* vertical rhythm between sections */
   --gutter:     clamp(1.25rem, 5vw, 4.5rem);
@@ -217,14 +214,10 @@
   --z-lightbox: 100;
 }
 
-/* On a narrow, tall viewport a 25% inset leaves a window too small to read as
-   a photograph, and every pinned pixel costs more on touch than it does with
-   a scroll wheel. Both are eased off. */
+/* Every pinned pixel costs more on touch, where the gesture is shorter and
+   the screen is the whole world, than it does with a scroll wheel. */
 @media (max-width: 768px) {
-  :root {
-    --hero-clip:   15%;
-    --hero-travel: 80vh;
-  }
+  :root { --hero-travel: 80vh; }
 }
 
 /* --- Dark sections ---------------------------------------------------------

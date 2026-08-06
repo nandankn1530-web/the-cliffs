@@ -122,45 +122,60 @@
     <div class="hero__track">
       <div class="hero__stage">
 
-        <!-- The ground the window sits on, and the reason the section is
-             called "Above the cloud line": deep altitude blue overhead,
-             thinning to a cloud sea at the foot of the frame, with three
-             layers of cloud drifting across it at different speeds. -->
-        <div class="hero__sky" aria-hidden="true">
-          <div class="hero__weather">
-            <span class="hero__clouds hero__clouds--far"></span>
-            <span class="hero__clouds hero__clouds--mid"></span>
-            <span class="hero__clouds hero__clouds--near"></span>
+        <!-- Four depth planes. Each travels a different distance as you
+             scroll, in the reference component's 70 / 55 / 40 / 10 ratio,
+             which is what separates them into foreground and distance. -->
+        <div class="hero__layers" data-parallax-layers>
+
+          <!-- 1 · the ridge itself, furthest back, travels furthest -->
+          <div class="hero__layer hero__layer--1" data-parallax-layer="1">
+            <img data-slot="hero-cloudline"
+                 src="assets/images/hero-cloudline-1920.jpg"
+                 srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                         assets/images/hero-cloudline-1920.jpg 1920w"
+                 sizes="100vw"
+                 width="1920" height="1280"
+                 fetchpriority="high" decoding="async"
+                 class="hero__bg"
+                 alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+          </div>
+
+          <!-- 2 · high haze, drifting across the ridge -->
+          <div class="hero__layer hero__layer--2" data-parallax-layer="2" aria-hidden="true">
+            <span class="hero__drift hero__drift--far"></span>
+          </div>
+
+          <div class="hero__scrim" aria-hidden="true"></div>
+
+          <!-- 3 · the name, sitting between the haze and the cloud bank -->
+          <div class="hero__layer hero__layer--3" data-parallax-layer="3">
+            <h1 class="hero__title" id="hero-title">
+              <span class="hero__word hero__word--in">Western</span>
+              <span class="hero__word hero__word--out">Ghats</span>
+            </h1>
+          </div>
+
+          <!-- 4 · the cloud line itself: nearest, travels least, and passes
+                   in front of everything including the name -->
+          <div class="hero__layer hero__layer--4" data-parallax-layer="4" aria-hidden="true">
+            <span class="hero__drift hero__drift--near"></span>
           </div>
         </div>
 
-        <div class="hero__frame">
-          <img data-slot="hero-cloudline"
-               src="assets/images/hero-cloudline-1920.jpg"
-               srcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                       assets/images/hero-cloudline-1920.jpg 1920w"
-               sizes="100vw"
-               width="1920" height="1280"
-               fetchpriority="high" decoding="async"
-               class="hero__bg"
-               alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
-          <div class="hero__scrim" aria-hidden="true"></div>
-        </div>
-
-        <h1 class="hero__title" id="hero-title">
-          <span class="hero__word hero__word--in">Above the cloud&nbsp;line,</span>
-          <span class="hero__word hero__word--out">the Ghats go&nbsp;quiet.</span>
-        </h1>
-
-        <p class="label hero__cue" aria-hidden="true">Scroll to open</p>
+        <div class="hero__fade" aria-hidden="true"></div>
+        <p class="label hero__cue" aria-hidden="true">Scroll</p>
       </div>
     </div>
 
     <div class="hero__after">
       <div class="hero__inner">
         <p class="label hero__eyebrow">
-          <span class="altitude">840 M</span> &nbsp;·&nbsp; Western Ghats, India
+          <span class="altitude">840 M</span> &nbsp;·&nbsp; Chikmagalur, Karnataka
         </p>
+
+        <!-- The headline the hero used to carry. It reads better here than it
+             did over the photograph, and the <h1> is now the place name. -->
+        <p class="hero__standfirst">Above the cloud line, the Ghats go quiet.</p>
 
         <p class="hero__lead">
           Three suites on a 1,400&nbsp;metre drop, an hour past the last town
