@@ -12,10 +12,11 @@
 <meta name="theme-color" content="#0E4034">
 
 <!-- Hero preload before the stylesheets so the preload scanner finds it first.
-     The hero image below carries an identical srcset/sizes, or this is wasted. -->
+     This srcset/sizes must stay identical to the hero <img>'s, or the browser
+     picks a different candidate and downloads the picture twice. -->
 <link rel="preload" as="image" fetchpriority="high"
-      imagesrcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                   assets/images/hero-cloudline-1920.jpg 1920w"
+      imagesrcset="assets/images/gallery-cliff-figure-960.jpg 960w,
+                   assets/images/gallery-cliff-figure-1920.jpg 1920w"
       imagesizes="100vw">
 
 <meta property="og:type" content="website">
@@ -122,49 +123,40 @@
     <div class="hero__track">
       <div class="hero__stage">
 
-        <!-- Depth planes, each travelling a different distance as you
-             scroll. The reference's four are 70 / 55 / 40 / 10; layer 2 is
-             absent here because a mid-ground plane needs a plate with a
-             transparent sky, and the only silhouette in the library is the
-             clifftop — reusing it would put the same person on screen
-             twice. The remaining three keep the reference's outer spacing. -->
         <div class="hero__layers" data-parallax-layers>
 
-          <!-- 1 · the ridges, furthest back, travelling furthest -->
+          <!-- 1 · the photograph, travelling furthest -->
           <div class="hero__layer hero__layer--1" data-parallax-layer="1">
-            <img data-slot="hero-cloudline"
-                 src="assets/images/hero-cloudline-1920.jpg"
-                 srcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                         assets/images/hero-cloudline-1920.jpg 1920w"
-                 sizes="100vw"
-                 width="1920" height="1280"
-                 fetchpriority="high" decoding="async"
-                 class="hero__bg"
-                 alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
-          </div>
-
-          <div class="hero__scrim" aria-hidden="true"></div>
-
-          <!-- 3 · the name, behind the clifftop and in front of the valley -->
-          <div class="hero__layer hero__layer--3" data-parallax-layer="3">
-            <h1 class="hero__title" id="hero-title">
-              <span class="hero__word hero__word--in">Western</span>
-              <span class="hero__word hero__word--out">Ghats</span>
-            </h1>
-          </div>
-
-          <!-- 4 · the clifftop and the figure on it. Nearest the camera, so
-                   it travels least and passes in front of the name. -->
-          <div class="hero__layer hero__layer--4" data-parallax-layer="4">
             <img data-slot="gallery-cliff-figure"
                  src="assets/images/gallery-cliff-figure-1920.jpg"
                  srcset="assets/images/gallery-cliff-figure-960.jpg 960w,
                          assets/images/gallery-cliff-figure-1920.jpg 1920w"
                  sizes="100vw"
                  width="1920" height="1080"
-                 decoding="async"
-                 class="hero__figure"
-                 alt="A lone figure standing at the edge of a clifftop above the valley at dusk.">
+                 fetchpriority="high" decoding="async"
+                 class="hero__bg"
+                 alt="A lone figure standing at the edge of a clifftop high above the valley at dusk.">
+          </div>
+
+          <!-- Warms the photograph to dusk and deepens the cliff. -->
+          <div class="hero__grade" aria-hidden="true"></div>
+          <div class="hero__scrim" aria-hidden="true"></div>
+
+          <!-- 3 · the copy, travelling least, so it holds while the
+                   landscape drifts behind it -->
+          <div class="hero__layer hero__layer--3" data-parallax-layer="3">
+            <div class="hero__copy">
+              <p class="label hero__kicker">
+                <span class="altitude">1,420 M</span> &nbsp;·&nbsp; Chikmagalur, Karnataka
+              </p>
+
+              <h1 class="hero__title" id="hero-title">
+                <span class="hero__word hero__word--in">Western</span>
+                <span class="hero__word hero__word--out">Ghats</span>
+              </h1>
+
+              <p class="hero__standfirst">Above the cloud line, the Ghats go quiet.</p>
+            </div>
           </div>
         </div>
 
@@ -175,14 +167,8 @@
 
     <div class="hero__after">
       <div class="hero__inner">
-        <p class="label hero__eyebrow">
-          <span class="altitude">840 M</span> &nbsp;·&nbsp; Chikmagalur, Karnataka
-        </p>
-
-        <!-- The headline the hero used to carry. It reads better here than it
-             did over the photograph, and the <h1> is now the place name. -->
-        <p class="hero__standfirst">Above the cloud line, the Ghats go quiet.</p>
-
+        <!-- The kicker and the standfirst both live on the photograph now.
+             Repeating them here read as a stutter rather than as emphasis. -->
         <p class="hero__lead">
           Three suites on a 1,400&nbsp;metre drop, an hour past the last town
           on the map. Step off the veranda and there is nothing between you
@@ -951,6 +937,7 @@
       "description": "A three-suite retreat perched at 1,420 metres in Karnataka's Western Ghats, India.",
       "url": "https://the-cliffs.netlify.app/",
       "image": [
+        "https://the-cliffs.netlify.app/assets/images/gallery-cliff-figure-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/hero-cloudline-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/suite-canopy-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/location-ridges-1920.jpg"

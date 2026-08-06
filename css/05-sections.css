@@ -3,21 +3,31 @@
    ========================================================================= */
 
 /* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
-   A parallax of three planes: the misty ridges, the place name, and the
-   clifftop with a figure standing on it. Each travels a different distance
-   as the stage is scrolled past — the differential is the entire effect, so
-   the proportions matter more than the absolute numbers.
+   A full-bleed photograph with the copy set into the open sky on its left,
+   and a two-plane parallax: the landscape drifts as you scroll while the
+   type very nearly holds.
 
-   The photograph is left clean. An earlier pass laid CSS cloud and haze
-   over it, which fought a picture that is already almost entirely weather.
+   The photograph is the design decision here. Three earlier passes used
+   hero-cloudline, which is near-white and almost featureless in the exact
+   band a headline wants — so each pass added another layer of darkening
+   (a heavier scrim, a radial pool behind the words, a mask to hold cloud
+   off the type) and the picture got muddier every time. The problem was
+   never the treatment. A photograph that is bright where the words go
+   cannot carry white words.
+
+   This one is built the other way round: a near-black cliff mass holding
+   the right of the frame, clean open sky on the left, and a figure at the
+   edge for scale. Cream on it clears 10:1 with nothing behind the type at
+   all, which is why the radial pool is gone rather than merely reduced.
+
+   It also puts the copy back on the left, which is what --scrim's diagonal
+   pass in 01-tokens.css was drawn for in the first place — that gradient
+   has been carrying centred type it was never shaped for.
 
    Everything is driven by one custom property, --hp (0 → 1), written to
-   .hero__stage by js/08-hero-scroll.js. Each plane's travel is a calc() off
-   it, so the composition is tuned here rather than in script.
-
-   --hp defaults to 0 — the scene at rest, composed as designed — so with
-   scripts disabled or motion reduced the hero is simply a still photograph
-   with the name on it.                                                     */
+   .hero__stage by js/08-hero-scroll.js. --hp defaults to 0, the scene at
+   rest, so with scripts disabled or motion reduced this is simply a still
+   photograph with the name on it.                                         */
 
 .hero {
   background: var(--pine);
@@ -51,8 +61,7 @@
 /* Each plane is over-tall and hangs above the stage by more than it will
    ever travel, so sliding down can never drag its top edge into view. That
    is what the reference needed its black-line-overflow element to hide;
-   sizing the planes correctly means there is no seam to cover in the first
-   place. */
+   sizing the planes correctly means there is no seam to cover at all. */
 .hero__layer {
   position: absolute;
   left: 0;
@@ -60,46 +69,62 @@
   bottom: 0;
 }
 
+/* The landscape. Also pulls back from a slight push-in as it travels, so
+   the frame settles rather than merely sliding — the movement reads as a
+   camera rather than as a texture on a conveyor. */
 .hero__layer--1 {
-  top: -26vh;
+  top: -24vh;
   z-index: 0;
-  transform: translate3d(0, calc(var(--hp) * 22vh), 0);
+  transform:
+    translate3d(0, calc(var(--hp) * 20vh), 0)
+    scale(calc(1.07 - 0.07 * var(--hp)));
 }
 
-/* The name. Centred by grid rather than by a translate, so the parallax
-   transform below is the only thing on the property and the two cannot
-   fight over it. */
+/* The copy travels barely at all. With only two planes the differential is
+   the entire depth cue, so the near plane has to be close to still — move
+   both by similar amounts and it reads as the page failing to scroll. */
 .hero__layer--3 {
   top: 0;
   z-index: 3;
   display: grid;
-  place-items: center;
-  transform: translate3d(0, calc(var(--hp) * 12vh), 0);
-}
-
-/* The blend lives on the plane, not on the <img> inside it. An element only
-   blends with the backdrop of its own parent stacking context, and the
-   parallax transform on this element makes it one — so `mix-blend-mode` on
-   the image would have found nothing behind it but this empty box and done
-   nothing at all, silently, leaving the keyed-out sky opaque. On the plane
-   itself the backdrop is the ridges and the scrim, which is what it needs
-   to multiply against. .hero__stage's `isolation: isolate` keeps the blend
-   from reaching further down the page than the hero. */
-.hero__layer--4 {
-  top: -6vh;
-  z-index: 4;
-  transform: translate3d(0, calc(var(--hp) * 3vh), 0);
-  mix-blend-mode: multiply;
+  place-items: center start;
+  padding-inline: var(--gutter);
+  transform: translate3d(0, calc(var(--hp) * 5vh), 0);
 }
 
 .hero__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Biased right so the cliff and the figure hold the right of the frame
+     and the open sky stays on the left, under the type, at every crop. */
+  object-position: 64% 50%;
 }
 
-/* Sits above the ridges but below the name, so it darkens the photograph
-   without dulling the type that has to read against it. */
+/* ── Grade ─────────────────────────────────────────────────────────────────
+   The photograph is a cool, almost neutral grey; the rest of the site is
+   cream, brass and pine. Left alone it reads as a stock plate dropped into
+   someone else's palette.
+
+   soft-light rather than a flat overlay: it warms the midtones and leaves
+   both ends alone, so the sky takes the brass without the cliff turning to
+   mud or the highlights blowing. Warm across the sky, cooling to pine down
+   in the mass of the cliff, which is the direction dusk actually falls. */
+.hero__grade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(155deg,
+    rgba(214, 178, 126, .95) 0%,
+    rgba(196, 165, 123, .70) 38%,
+    rgba(90, 110, 104, .45) 68%,
+    rgba(10, 46, 38, .60) 100%);
+}
+
+/* Above the grade, below the copy: it darkens the photograph without
+   dulling the type that has to read against it. */
 .hero__scrim {
   position: absolute;
   inset: 0;
@@ -107,32 +132,34 @@
   background: var(--scrim);
 }
 
-/* ── The clifftop, keyed out of its own sky ────────────────────────────────
-   The reference's foreground plane is a pre-cut WebP with a transparent
-   sky. This library has no such plate — but the source photograph is a
-   near-black silhouette against a plain pale sky, which is the one case
-   where a cutout can be recovered in the browser rather than in Photoshop.
-
-   contrast() pushes the two ends apart: the sky, already above mid-grey,
-   is driven to white, and the cliff, already close to black, is driven to
-   black. brightness() then finishes the sky off. multiply blending does
-   the rest, because multiply is neutral against white and absolute against
-   black — the sky disappears completely and the silhouette lands solid.
-
-   The consequence to know about: multiply darkens whatever is beneath, so
-   this plane genuinely occludes the name where the two overlap. That is
-   the depth cue that makes the parallax read, and it is why the cliff is
-   positioned low and the name sits above the ridge line.                  */
-.hero__figure {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Biased right of centre: the figure stands at ~56% across the frame, and
-     centre-cropping a 16:9 source into a narrow viewport walks them off the
-     edge. */
-  object-position: 56% 50%;
-  filter: contrast(3) brightness(1.5);
+/* ── The copy block ────────────────────────────────────────────────────────
+   Held to a measure so the lines stack into a block with a clean left edge
+   rather than running out across the picture. */
+.hero__copy {
+  max-width: min(34rem, 92%);
 }
+
+/* Brass-lift rather than brass: this sits on a graded photograph, not on
+   flat pine, and the lighter value holds where the picture goes pale.
+   The rule keeps it from floating as a stray line of small caps. */
+.hero__kicker {
+  color: var(--brass-lift);
+  margin-bottom: var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  text-shadow: 0 1px 3px rgba(8, 20, 16, .75);
+}
+
+.hero__kicker::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: currentColor;
+  flex: none;
+  opacity: .8;
+}
+
 
 /* Hands the stage over to the pine below instead of ending on a cut edge. */
 .hero__fade {
@@ -148,26 +175,25 @@
 
 
 /* ── Title ─────────────────────────────────────────────────────────────────
-   Two lines, the second italic and warm. One <h1> with continuous text for
-   assistive tech.                                                          */
+   Two lines, the second italic and warm, ranged left with the rest of the
+   copy block. One <h1> with continuous text for assistive tech.
+
+   The radial pool that used to sit behind this is gone entirely, not turned
+   down. It existed to buy contrast the photograph would not give, and every
+   version of it was a soft dark blob parked in the middle of a picture. The
+   type now sits on the dark side of a dark photograph and clears 10:1
+   unaided, so there is nothing left for a pool to fix.                     */
 
 .hero__title {
-  /* In flow inside .hero__layer--3, which centres it with place-items. The
-     plane owns the parallax transform and the title owns nothing but type,
-     so the two never contend for the transform property. */
-  position: relative;
-  z-index: 1;
   margin: 0;
-  width: 100%;
-  padding-inline: var(--gutter);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   /* No gap: --lh-display (0.98) already sets the leading, and adding 8px on
      top of it opened the two lines into two separate statements instead of
      one headline. */
   gap: 0;
-  text-align: center;
+  text-align: left;
   color: var(--cream-lift);
   pointer-events: none;
 
@@ -177,44 +203,12 @@
   font-weight: var(--hero-wght);
   letter-spacing: var(--ls-hero);
 
-  /* Three soft passes rather than a tight near-solid one. At 48–112px a
-     3px-blur shadow sits right at the glyph edge and reads as a cheap
-     stroke around the letterforms; the heavier weight above is now doing
-     that job properly, so these only have to supply atmospheric separation
-     from whatever is behind. */
+  /* Soft passes only. At 48–112px a tight 3px blur sits right at the glyph
+     edge and reads as a cheap stroke; the weight is doing that job. These
+     just lift the type off the landscape. */
   text-shadow:
-    0 1px 2px rgba(8, 20, 16, .5),
-    0 6px 24px rgba(8, 20, 16, .5),
-    0 16px 56px rgba(10, 46, 38, .38);
-}
-
-/* ── The name's own pool of shade ──────────────────────────────────────────
-   The scrim is a full-frame gradient, so the only way it can carry centred
-   type is by darkening the whole photograph, which just makes the photo
-   muddy. This darkens only the band the words occupy and falls off to
-   nothing well before the frame edge.
-
-   Held at full strength rather than tied to scroll. It was ramped with --hp
-   back when --hp meant "how open is the window"; --hp now means "how far
-   have the planes separated", and the type needs exactly as much backing at
-   the end of that as at the start. The photograph's brightest mist is what
-   this is defending against and the parallax does not move it away.        */
-.hero__title::before {
-  content: '';
-  position: absolute;
-  /* Generous bleed — the falloff needs room to end on nothing. A pool that
-     stops inside the viewport reads as a grey rectangle, which is worse than
-     the problem it solves. */
-  inset: -70% -8%;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 1;
-  background: radial-gradient(
-    ellipse 48% 40% at 50% 50%,
-    rgba(8, 20, 16, .72) 0%,
-    rgba(8, 20, 16, .54) 44%,
-    rgba(8, 20, 16, .26) 72%,
-    transparent 100%);
+    0 2px 10px rgba(8, 20, 16, .45),
+    0 14px 48px rgba(8, 20, 16, .35);
 }
 
 .hero__word { display: block; }
@@ -223,22 +217,16 @@
 .hero__cue {
   position: absolute;
   z-index: 1;
-  /* Explicit left/right rather than relying on a static position that no
-     longer has an in-flow sibling to resolve against. */
-  left: 0;
-  right: 0;
-  text-align: center;
+  /* Ranged left, under the copy block, rather than centred under nothing.
+     A centred cue on a left-ranged hero is the one element that gives away
+     that a layout was assembled rather than composed. */
+  left: var(--gutter);
   bottom: clamp(1.5rem, 5vh, 3rem);
-  /* Back to cream. It was deep slate while the foot of the frame was a
-     bright cloud sea; the foot of the frame is now the keyed clifftop,
-     which is close to black, and dark-on-dark measured 1.2:1. Light type
-     with a dark shadow is right for every state this hero has. */
-  color: rgba(251, 249, 245, .9);
+  color: rgba(251, 249, 245, .82);
   text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .6);
   pointer-events: none;
-  /* Gone well before the window is fully open, because by then it is over
-     bare photograph, where a dark cue would disappear as surely as a light
-     one did on the cloud sea. Its job is finished by then anyway. */
+  /* Gone early — its job is finished as soon as the visitor has taken the
+     hint, and it should not still be sitting there mid-parallax. */
   opacity: clamp(0, calc(1 - var(--hp) * 2.2), 1);
   /* A slow breath, so it reads as an invitation rather than a label.
      Transform only — opacity above is scroll-driven, and an animation
@@ -273,35 +261,17 @@
   .hero__cue { display: none; }
 }
 
-/* The eyebrow sits on pine below the stage now, so brass would be legal —
-   but keeping it cream matches the rest of the section headers. */
-.hero__eyebrow {
-  color: rgba(244, 241, 234, .86);
-  margin-bottom: var(--s-5);
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-}
-
-.hero__eyebrow::before {
-  content: '';
-  width: 32px; height: 1px;
-  background: var(--brass);
-  flex: none;
-}
-
-/* The line the hero used to carry as its headline. Set in the display face
-   so it still reads as a statement rather than as body copy, but well below
-   --t-hero so it supports the name overhead instead of competing with it. */
+/* Sits under the name on the photograph. Set in the body face, not the
+   display one: two lines of Bodoni stacked on top of each other compete,
+   and the sans reads as a caption to the name rather than as a second,
+   quieter headline arguing with it. */
 .hero__standfirst {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
-  line-height: 1.12;
-  letter-spacing: var(--ls-display);
-  color: var(--sand);
-  margin-top: var(--s-4);
-  max-width: 22ch;
+  font-size: var(--t-lead);
+  line-height: 1.45;
+  color: rgba(244, 241, 234, .9);
+  text-shadow: 0 1px 3px rgba(8, 20, 16, .7), 0 4px 18px rgba(8, 20, 16, .5);
+  margin-top: var(--s-5);
+  max-width: 30ch;
 }
 
 .hero__lead {

@@ -28,7 +28,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 
 | Slot | Widths | Native | Used in | Alt class | Replacement note |
 |---|---|---|---|---|---|
-| `hero-cloudline` | 1280 · 1920 | 1920×1280 | §1 hero **background**, preloaded | atmospheric | The single most important shot. Wants a wide, layered view with cloud actually moving through the ridges — not a clear-day panorama. Landscape, 3:2 minimum. |
+| `hero-cloudline` | 1280 · 1920 | 1920×1280 | JSON-LD `image` only | atmospheric | Was the hero for several passes and did not work there: it is near-white and almost featureless in the exact band the headline occupies, so it needed a heavier scrim, then a pool behind the words, then a mask — and got muddier each time. Kept because it is a good picture of the setting, but a hero plate has to be dark where the type goes. |
 | `place-road` | 1280 | 1280×853 | §2 The Place | atmospheric | The approach road. Should feel like arriving, not like a landscape. |
 | `place-band` | 1920 | 1920×1280 | §2 pinned band | atmospheric | Full-bleed band. Needs to work cropped very wide. |
 | `location-ridges` | 1920 | 1920×1080 | §6 Location | informative | Show the actual terrain guests will drive through. |
@@ -41,7 +41,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | `exp-waterfall` | 1280 | 1280×853 | §4 rail panel | atmospheric | |
 | `exp-coffee` | 1280 | 1280×853 | §4 rail panel | informative | South Indian filter coffee. |
 | `exp-spa` | 1280 | 1280×853 | §4 rail panel | informative | ⚠️ Amantaka, Laos. |
-| `gallery-cliff-figure` | 960 · 1920 | 1920×1080 | §5 mosaic feature cell **and** §1 hero foreground plane | atmospheric | **The anchor image** — a lone figure on a clifftop at dusk. Whatever replaces it must carry the same "this is the edge" feeling; the gallery is built around it. ⚠️ The hero keys the sky out of this in the browser (contrast + multiply, see `.hero__figure`), which only works because the subject is near-black against a plain pale sky. A replacement shot without that separation will key badly and needs a pre-cut transparent PNG instead. |
+| `gallery-cliff-figure` | 960 · 1920 | 1920×1080 | §1 hero **background**, preloaded — **and** §5 mosaic feature cell | atmospheric | **The anchor image** — a lone figure on a clifftop at dusk. Whatever replaces it must carry the same "this is the edge" feeling; the gallery is built around it. ⚠️ It is also the hero now, and it earns that by being near-black on the right with open sky on the left — that split is what lets the headline sit on it with no pool or heavy scrim. A replacement without it will need the hero's contrast treatment rebuilt from scratch. Keep the horizon low and the left side clear. |
 | `gallery-mist-layers` | 960 · 1920 | 1920×1446 | §5 mosaic | atmospheric | |
 | `gallery-suite-bed` | 960 · 1920 | 1920×1440 | §5 mosaic | informative | ⚠️ Amantaka, Laos. |
 | `gallery-lounge-dusk` | 960 · 1920 | 1920×1371 | §5 mosaic | informative | ⚠️ Amantaka, Laos. |
