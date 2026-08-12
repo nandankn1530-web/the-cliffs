@@ -589,10 +589,15 @@
         </li>
 
         <li class="gallery__item gallery__item--tall" data-cat="land" style="--i:7">
-          <button class="gallery__btn" type="button" data-slot="gallery-shola" data-full="assets/images/gallery-shola-1920.jpg">
-            <img src="assets/images/gallery-shola-960.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
-                 width="960" height="640" loading="lazy" decoding="async"
-                 alt="Shola cloud forest — dense stunted trees in a fold of grassland.">
+          <button class="gallery__btn" type="button" data-slot="location-ridges" data-full="assets/images/location-ridges-1920.jpg">
+            <!-- Took the shola cell's place when that photograph moved to §6.
+                 Served at 1920 into a cell a few hundred pixels wide because
+                 this slot has no 960 variant — see MANIFEST.md. It is lazy
+                 and below the fold, so it costs bandwidth rather than paint,
+                 but it should be resized before launch. -->
+            <img src="assets/images/location-ridges-1920.jpg" sizes="(min-width:1180px) 22vw, (min-width:760px) 30vw, 45vw"
+                 width="1920" height="1080" loading="lazy" decoding="async"
+                 alt="Rolling forested hills and tea slopes stretching to the horizon in the Western Ghats.">
           </button>
         </li>
 
@@ -698,14 +703,17 @@
 
     <div class="bleed" style="margin-top: var(--s-8)">
       <div class="frame reveal reveal-img" style="border-radius:0; aspect-ratio:21/9">
-        <img data-slot="location-ridges"
-             src="assets/images/location-ridges-1920.jpg"
-             sizes="100vw" width="1920" height="1080"
+        <!-- Swapped with the gallery's shola cell. This section is about how
+             you get here, and a road running into the trees says that; the
+             hazy ridge panorama that was here said "a view", and said it at
+             very low contrast. object-position holds the crop low so the
+             21:9 band keeps the road rather than centring on canopy. -->
+        <img data-slot="gallery-shola"
+             src="assets/images/gallery-shola-1920.jpg"
+             sizes="100vw" width="1920" height="1280"
              loading="lazy" decoding="async"
-             alt="Rolling forested hills and tea slopes stretching to the horizon in the Western Ghats.">
-        <!-- No .mist: this frame is already hazy blue and the overlay only
-             bleached it. The tea-slope band in §2 is the one photograph with
-             enough contrast to carry it. -->
+             style="object-position: 50% 62%"
+             alt="A wet single-track road running into shola cloud forest, canopy closing overhead.">
       </div>
     </div>
   </section>

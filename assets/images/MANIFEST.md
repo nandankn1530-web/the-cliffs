@@ -31,7 +31,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | `hero-cloudline` | 1280 · 1920 | 1920×1280 | §1 hero — **the card that opens** | atmospheric | Hidden at rest and uncovered by scrolling, so it has to work at both ends of the open: as a 300px portrait crop and as a near-full-bleed letterbox. Keep the subject centred, since the crop changes shape as it grows. It failed as the hero *background* in earlier passes — near-white and featureless where a headline sits — but as the card it is never what the type reads against. |
 | `place-road` | 1280 | 1280×853 | §2 The Place | atmospheric | The approach road. Should feel like arriving, not like a landscape. |
 | `place-band` | 1920 | 1920×1280 | §1 hero **background**, preloaded — **and** §2 pinned band | atmospheric | ⚠️ Used twice on the page. High-key: bright saturated green through the middle, blown to near-white top right, which is where a centred headline lands — the right-hand floors of `--scrim` were raised specifically to carry type over it. A darker replacement can have them lowered again. Ships at one width, so the preload uses a plain `href`; add a 1280 and it needs `imagesrcset` to match the `<img>`. |
-| `location-ridges` | 1920 | 1920×1080 | §6 Location | informative | Show the actual terrain guests will drive through. |
+| `location-ridges` | 1920 | 1920×1080 | §5 mosaic | atmospheric | ⚠️ **Needs a 960.** It is the only mosaic cell without one, so the grid serves the full 1920 file into a cell a few hundred pixels wide. Lazy and below the fold, so it costs bandwidth rather than paint, but resize it before launch. Moved out of §6 because it is hazy and low-contrast with no focal point — it reads as a view rather than as somewhere you travel to. |
 | `book-dusk` | 1280 · 1920 | 1920×1446 | §8 final CTA, behind scrim | **decorative** (`alt=""`) | Dusk. Text sits on top, so keep the upper third simple and avoid a bright sky behind the headline. Alt is empty on purpose — the heading already says what the section is, and a description read out over the booking button is noise. |
 | `suite-canopy` | 1280 · 1920 | 1920×1280 | §3 The Canopy Suite | informative | ⚠️ Amantaka, Laos. Replace with the real suite: bed, window, and the view in one frame. |
 | `suite-veranda` | 1280 · 1920 | 1920×1280 | §3 The Long Room | informative | ⚠️ Amantaka, Laos. |
@@ -51,7 +51,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | `gallery-spices` | 960 · 1920 | 1920×1280 | §5 mosaic | informative | |
 | `gallery-ponmudi` | 960 · 1920 | 1920×1277 | §5 mosaic | atmospheric | |
 | `gallery-sunrise` | 960 · 1920 | 1920×1440 | §5 mosaic | atmospheric | |
-| `gallery-shola` | 960 · 1920 | 1920×1280 | §5 mosaic | atmospheric | Shola forest — the cloud-forest ecosystem the Ghats are known for. |
+| `gallery-shola` | 960 · 1920 | 1920×1280 | §6 Location, full-bleed band | informative | A road running into shola forest — the terrain guests actually drive through, which is what this section is for. Cropped to 21:9 with `object-position` held low so the band keeps the road instead of centring on canopy; a replacement needs its subject in the lower middle for the same reason. |
 | `og-cover` | 1280 | 1280×853 | `og:image` only | — | Never rendered on the page. Social previews crop to roughly 1.91:1, so keep the subject centred. |
 
 **960 = gallery thumbnail · 1280 = page image · 1920 = lightbox and full-bleed.**
