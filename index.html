@@ -49,7 +49,7 @@
      This is safe here specifically because the @font-face fallbacks in
      01-tokens.css are metric-adjusted (size-adjust / ascent-override), so
      the fallback occupies identical space and a miss costs no layout. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..500;1,6..96,400..500&family=Instrument+Sans:wght@400;500&display=optional">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..600&family=Instrument+Sans:wght@400;500&display=optional">
 
 <link rel="stylesheet" href="css/01-tokens.css">
 <link rel="stylesheet" href="css/02-base.css">
@@ -65,12 +65,6 @@
 <body>
 
 <a class="skip-link" href="#main">Skip to content</a>
-
-<!-- ═══ The Ascent — elevation spine (desktop only, decorative) ═══ -->
-<div class="spine" aria-hidden="true">
-  <div class="spine__track"><div class="spine__fill"></div></div>
-  <div class="spine__readout"><span data-ascent-readout>840 M</span></div>
-</div>
 
 <header class="nav" id="nav">
   <div class="container nav__inner">
@@ -923,7 +917,6 @@
 <script src="js/00-config.js" defer></script>
 <script src="js/01-images.js" defer></script>
 <script src="js/02-nav.js" defer></script>
-<script src="js/03-ascent.js" defer></script>
 <script src="js/04-reveal.js" defer></script>
 <script src="js/05-motion.js" defer></script>
 <script src="js/06-gallery.js" defer></script>

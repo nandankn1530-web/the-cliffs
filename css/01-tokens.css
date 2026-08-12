@@ -127,46 +127,58 @@
 
   /* --- Typography ------------------------------------------------------- */
 
-  --font-display: 'Bodoni Moda', 'Bodoni Fallback', Didot, Georgia, serif;
+  /* Lora, not Bodoni Moda.
+
+     Bodoni is a Didone: its whole character is the extreme jump between
+     thick stems and hairline thins. That is beautiful in print at size and
+     a liability on a screen, because the thins fall below one device pixel
+     and simply stop being drawn — the note this block used to carry said as
+     much ("Bodoni's hairlines vanish below ~1.75rem"), and every heading
+     under about 34px was hitting it. Nothing about weight or optical size
+     fixes it; the contrast between strokes IS the typeface.
+
+     Lora is a low-contrast serif: its thin strokes are a fraction of the
+     stem rather than a hairline, so they survive at any size a heading is
+     ever set at. It keeps the warmth and the editorial feel the page is
+     built around, and it has real italics, which the accent lines use.  */
+  --font-display: 'Lora', 'Lora Fallback', Georgia, 'Times New Roman', serif;
   --font-body:    'Instrument Sans', 'Instrument Fallback', 'Segoe UI', system-ui, sans-serif;
 
-  /* Bodoni's hairlines vanish below ~1.75rem. Anything smaller uses body. */
-  --display-opsz: 96;
-  --display-wght: 400;
+  /* Lora has no optical-size axis and does not need one — that axis only
+     existed to manage Bodoni's stroke contrast. Weight alone now. */
+  --display-wght: 500;
 
-  /* Type scale — 1.25 ratio, fluid at the top end */
+  /* Type scale — 1.25 ratio, fluid at the top end.
+     The bottom four steps are each up a notch: 16px body, 15px small, 12px
+     labels and 11px micro were all technically legible and none of them
+     were comfortable, which is a different test and the one that matters. */
   --t-hero:    clamp(3rem, 8vw, 7rem);
   --t-h2:      clamp(2.25rem, 4.5vw, 3.75rem);
   --t-h3:      clamp(1.5rem, 2.2vw, 2.125rem);
-  --t-lead:    clamp(1.0625rem, 1.35vw, 1.25rem);
-  --t-body:    1rem;
-  --t-small:   0.9375rem;
-  --t-label:   0.75rem;      /* tracked uppercase labels */
-  --t-micro:   0.6875rem;
+  --t-lead:    clamp(1.125rem, 1.4vw, 1.3125rem);
+  --t-body:    1.0625rem;    /* 17px */
+  --t-small:   1rem;         /* 16px */
+  --t-label:   0.8125rem;    /* 13px — tracked uppercase labels */
+  --t-micro:   0.75rem;      /* 12px */
 
-  --lh-display: 0.98;
-  --lh-heading: 1.08;
-  --lh-body:    1.75;
-  --ls-display: -0.015em;    /* Didones want near-zero tracking at size */
+  --lh-display: 1.02;
+  --lh-heading: 1.14;
+  --lh-body:    1.7;
+  /* Lora is a wider, rounder face than Bodoni and does not want the same
+     tightening — pulled in this far it starts to touch at display sizes. */
+  --ls-display: -0.008em;
 
   /* --- The hero headline ------------------------------------------------
      Set apart from the rest of the display type, because it is the only
-     heading on the site that does not sit on a flat ground — it lies over
-     sky, moving cloud and a photograph.
+     heading on the site that does not sit on a flat ground — it lies over a
+     photograph, where every stroke has to survive whatever is behind it.
 
-     opsz is the whole point. Bodoni's optical-size axis makes the hairlines
-     thinner as it climbs, so 96 is "correct" for display sizes on paper and
-     precisely wrong over imagery: those hairlines are what disappear into a
-     bright cloud. Dropping to 68 and taking the weight to 500 keeps it
-     unmistakably Didone while giving the thin strokes enough body to hold
-     against anything behind them.
-
-     Tighter tracking than --ls-display for the same reason it is set larger:
-     at this size the letterforms need to knit into words rather than sit as
-     separate shapes.                                                       */
-  --hero-opsz: 68;
-  --hero-wght: 500;
-  --ls-hero:   -0.028em;
+     Heavier than the other headings for that reason alone. The optical-size
+     axis that used to live here went with Bodoni: it existed to hold that
+     face's hairlines together over imagery, and Lora has no hairlines to
+     hold together.                                                        */
+  --hero-wght: 600;
+  --ls-hero:   -0.014em;
   --ls-label:   0.16em;
 
   /* --- Spacing — 8px base ----------------------------------------------- */
@@ -212,7 +224,6 @@
 
   --z-mist:     1;
   --z-content:  2;
-  --z-spine:    40;
   --z-nav:      50;
   --z-mobilebar:60;
   --z-lightbox: 100;
@@ -241,12 +252,17 @@
    WOFF2 would be CORS-blocked. The point is that the swap from fallback to
    webfont is a repaint, not a reflow — no layout shift.                      */
 
+/* Georgia first, not Didot. Georgia is the closest widely-installed face to
+   Lora — same low stroke contrast, similar generous x-height — where Didot
+   was the match for Bodoni and would now stand in for a face nothing like
+   it. size-adjust back to 100%: Lora and Georgia are already close on the
+   measure the old 94% was correcting for. */
 @font-face {
-  font-family: 'Bodoni Fallback';
-  src: local('Didot'), local('Bodoni MT'), local('Georgia'), local('Times New Roman');
-  size-adjust: 94%;
-  ascent-override: 90%;
-  descent-override: 22%;
+  font-family: 'Lora Fallback';
+  src: local('Georgia'), local('Times New Roman'), local('Times');
+  size-adjust: 100%;
+  ascent-override: 92%;
+  descent-override: 24%;
   line-gap-override: 0%;
 }
 

@@ -332,7 +332,6 @@
   gap: var(--s-3);
   text-decoration: none;
   font-family: var(--font-display);
-  font-variation-settings: 'opsz' 40;
   font-size: 1.375rem;
   letter-spacing: -0.01em;
   flex: none;
@@ -722,7 +721,6 @@
 
 .footer__brand {
   font-family: var(--font-display);
-  font-variation-settings: 'opsz' 40;
   font-size: 1.5rem;
   color: var(--cream);
 }

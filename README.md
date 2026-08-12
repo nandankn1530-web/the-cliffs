@@ -151,6 +151,6 @@ encoder. `cwebp -q 78` over `assets/images/`, then swap `.jpg` → `.webp` in `i
 [`assets/images/MANIFEST.md`](assets/images/MANIFEST.md).
 
 **Self-host the fonts.** Once you're on a real domain the `file://` CORS problem is gone. Download
-the Bodoni Moda and Instrument Sans WOFF2 files, serve them from `assets/fonts/`, and add
+the Lora and Instrument Sans WOFF2 files, serve them from `assets/fonts/`, and add
 `<link rel="preload" as="font" crossorigin>`. Removes two DNS lookups and two TLS handshakes from
 the critical path.

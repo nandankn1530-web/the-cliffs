@@ -154,7 +154,6 @@
 
   /* Overrides the global h1 setting — see the --hero-* block in
      01-tokens.css for why this one heading is set differently. */
-  font-variation-settings: 'opsz' var(--hero-opsz);
   font-weight: var(--hero-wght);
   letter-spacing: var(--ls-hero);
 
@@ -253,7 +252,7 @@
 
 /* The line that opens the block below the stage. Back in the display face
    now that it is on pine rather than sharing a photograph with the name —
-   it was set in the sans to stop two sizes of Bodoni arguing over the same
+   it was set in the sans to stop two sizes of the display face arguing over
    picture, and that constraint is gone. */
 .hero__standfirst {
   font-family: var(--font-display);
@@ -301,7 +300,6 @@
    below covers everything else and looks nearly identical. */
 .place__lede::first-letter {
   font-family: var(--font-display);
-  font-variation-settings: 'opsz' 96;
   font-size: 3.6em;
   line-height: 0.82;
   float: left;

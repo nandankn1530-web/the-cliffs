@@ -1,5 +1,5 @@
 /* ============================================================================
-   06-motion.css — the Ascent, the mist, reveals, Ken Burns
+   06-motion.css — the mist, reveals, Ken Burns
 
    Rules enforced throughout:
      · Only `transform` and `opacity` are animated on scroll.
@@ -10,78 +10,13 @@
    ========================================================================= */
 
 
-/* ═══ The Ascent — elevation spine ═════════════════════════════════════════
-   The signature. You climb through cloud to reach a clifftop Ghats property,
-   so the page climbs with you: a hairline down the left edge with an altitude
-   readout that rises from 840 m at the hero to 1,420 m at the booking CTA.
+/* ═══ Altitude eyebrow ═════════════════════════════════════════════════════
+   All that survives of the elevation spine that used to run down the left
+   edge. The fixed hairline and its rotated altitude readout are gone: a
+   decorative rail pinned over the page competes with the content it is
+   annotating, and its vertical type was the least legible thing on the
+   site. The altitude itself still earns its place inline.                  */
 
-   Sections are marked by altitude rather than 01/02/03 because a numbered
-   marker is decoration unless the order carries information. Altitude does —
-   the climb is the reason the view exists.                                   */
-
-.spine {
-  --ascent-progress: 0;   /* 03-ascent.js overwrites this on scroll */
-  position: fixed;
-  top: 0;
-  left: clamp(14px, 2.2vw, 34px);
-  bottom: 0;
-  z-index: var(--z-spine);
-  display: none;
-  align-items: center;
-  pointer-events: none;
-}
-
-@media (min-width: 1180px) {
-  .spine { display: flex; }
-}
-
-.spine__track {
-  position: absolute;
-  top: 18vh;
-  bottom: 18vh;
-  left: 50%;
-  width: 1px;
-  background: var(--hairline);
-  transform: translateX(-50%);
-}
-
-/* Filled portion tracks scroll progress. scaleY on a transform-origin of top
-   is compositor-only — no layout, no paint. */
-.spine__fill {
-  position: absolute;
-  inset: 0;
-  background: var(--brass);
-  transform-origin: top;
-  transform: scaleY(var(--ascent-progress, 0));
-}
-
-.spine__readout {
-  position: relative;
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
-  font-family: var(--font-body);
-  font-size: var(--t-micro);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-2);
-  background: var(--bg);
-  padding-block: var(--s-3);
-  transition: color var(--dur-mid) var(--ease-soft);
-}
-
-/* Over a dark section the readout must flip, or it vanishes */
-.spine.is-over-dark .spine__readout { color: var(--stone); background: var(--pine); }
-.spine.is-over-dark .spine__track { background: var(--hairline-dark); }
-
-/* The hero is a full-bleed photo card inset only a few pixels from the
-   viewport edge, so the spine would otherwise sit on top of the photograph.
-   Better to let it arrive: you start at the foot of the climb, and the
-   altimeter fades in once you actually begin ascending. */
-.spine { transition: opacity var(--dur-mid) var(--ease-soft); }
-.spine.is-hidden { opacity: 0; }
-
-/* Mobile keeps the idea, drops the chrome: altitude survives as an eyebrow */
 .altitude {
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
