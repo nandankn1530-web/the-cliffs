@@ -12,12 +12,11 @@
 <meta name="theme-color" content="#0E4034">
 
 <!-- Hero preload before the stylesheets so the preload scanner finds it first.
-     This srcset/sizes must stay identical to the hero <img>'s, or the browser
-     picks a different candidate and downloads the picture twice. -->
+     This must stay identical to the hero background <img>'s source, or the
+     browser picks a different candidate and downloads the picture twice.
+     place-band ships at one width only, so this is a plain href. -->
 <link rel="preload" as="image" fetchpriority="high"
-      imagesrcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                   assets/images/hero-cloudline-1920.jpg 1920w"
-      imagesizes="100vw">
+      href="assets/images/place-band-1920.jpg">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Cliffs">
@@ -123,28 +122,29 @@
     <div class="hero__track">
       <div class="hero__stage">
 
-        <!-- The ridge, behind everything, receding as the card opens -->
-        <img data-slot="hero-cloudline"
-             src="assets/images/hero-cloudline-1920.jpg"
-             srcset="assets/images/hero-cloudline-1280.jpg 1280w,
-                     assets/images/hero-cloudline-1920.jpg 1920w"
+        <!-- The tea slopes, behind everything, receding as the card opens -->
+        <img data-slot="place-band"
+             src="assets/images/place-band-1920.jpg"
              sizes="100vw"
              width="1920" height="1280"
              fetchpriority="high" decoding="async"
              class="hero__bg"
-             alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
+             alt="Tea slopes under low cloud in the Western Ghats, ridges fading back into mist.">
 
         <div class="hero__scrim" aria-hidden="true"></div>
 
-        <!-- The card that opens: a small portrait plate that becomes a
-             wide letterbox as you scroll. -->
+        <!-- The card that opens. Absent at rest and fading in only once the
+             scroll has begun, so the first thing on screen is the landscape
+             and the name, and the card is something the visitor uncovers. -->
         <figure class="hero__media">
-          <img data-slot="exp-waterfall"
-               src="assets/images/exp-waterfall-1280.jpg"
+          <img data-slot="hero-cloudline"
+               src="assets/images/hero-cloudline-1920.jpg"
+               srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                       assets/images/hero-cloudline-1920.jpg 1920w"
                sizes="(max-width: 768px) 95vw, min(95vw, 1550px)"
-               width="1280" height="853"
+               width="1920" height="1280"
                decoding="async"
-               alt="A shola stream falling through moss and black rock in the rain.">
+               alt="Cloud moving through steep forested ridges, palms in the foreground.">
           <span class="hero__media-veil" aria-hidden="true"></span>
         </figure>
 
@@ -937,6 +937,7 @@
       "description": "A three-suite retreat perched at 1,420 metres in Karnataka's Western Ghats, India.",
       "url": "https://the-cliffs.netlify.app/",
       "image": [
+        "https://the-cliffs.netlify.app/assets/images/place-band-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/hero-cloudline-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/gallery-cliff-figure-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/suite-canopy-1920.jpg",

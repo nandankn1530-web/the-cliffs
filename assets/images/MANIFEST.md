@@ -28,9 +28,9 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 
 | Slot | Widths | Native | Used in | Alt class | Replacement note |
 |---|---|---|---|---|---|
-| `hero-cloudline` | 1280 · 1920 | 1920×1280 | §1 hero **background**, preloaded | atmospheric | Sits behind the card that opens, and recedes as it does — so it is read as atmosphere, not as the plate carrying the headline. That distinction matters: it is near-white and featureless in the middle of the frame, which is why it failed when the headline sat directly on it. Behind a veiled card it is fine. |
+| `hero-cloudline` | 1280 · 1920 | 1920×1280 | §1 hero — **the card that opens** | atmospheric | Hidden at rest and uncovered by scrolling, so it has to work at both ends of the open: as a 300px portrait crop and as a near-full-bleed letterbox. Keep the subject centred, since the crop changes shape as it grows. It failed as the hero *background* in earlier passes — near-white and featureless where a headline sits — but as the card it is never what the type reads against. |
 | `place-road` | 1280 | 1280×853 | §2 The Place | atmospheric | The approach road. Should feel like arriving, not like a landscape. |
-| `place-band` | 1920 | 1920×1280 | §2 pinned band | atmospheric | Full-bleed band. Needs to work cropped very wide. |
+| `place-band` | 1920 | 1920×1280 | §1 hero **background**, preloaded — **and** §2 pinned band | atmospheric | ⚠️ Used twice on the page. High-key: bright saturated green through the middle, blown to near-white top right, which is where a centred headline lands — the right-hand floors of `--scrim` were raised specifically to carry type over it. A darker replacement can have them lowered again. Ships at one width, so the preload uses a plain `href`; add a 1280 and it needs `imagesrcset` to match the `<img>`. |
 | `location-ridges` | 1920 | 1920×1080 | §6 Location | informative | Show the actual terrain guests will drive through. |
 | `book-dusk` | 1280 · 1920 | 1920×1446 | §8 final CTA, behind scrim | **decorative** (`alt=""`) | Dusk. Text sits on top, so keep the upper third simple and avoid a bright sky behind the headline. Alt is empty on purpose — the heading already says what the section is, and a description read out over the booking button is noise. |
 | `suite-canopy` | 1280 · 1920 | 1920×1280 | §3 The Canopy Suite | informative | ⚠️ Amantaka, Laos. Replace with the real suite: bed, window, and the view in one frame. |
@@ -38,7 +38,7 @@ placeholder photography; see [`CONTENT.md`](../../CONTENT.md) rows B2 and B3.
 | `suite-bath` | 1280 · 1920 | 1920×1280 | §3 The Rain Room | informative | ⚠️ Amantaka, Laos. |
 | `exp-tea` | 1920 | 1920×839 | §4 rail panel | atmospheric | Ultra-wide (2.29:1) — chosen because the rail panel is letterboxed. |
 | `exp-trogon` | 1280 | 1280×853 | §4 rail panel | informative | Malabar Trogon. Any Ghats endemic works; keep the shallow depth of field. |
-| `exp-waterfall` | 1280 | 1280×853 | §1 hero — **the card that opens** — and §4 rail panel | atmospheric | Carries the hero opening, so it has to hold at both ends of that: legible as a 300px portrait card and as a near-full-bleed letterbox. Keep the subject centred and away from the edges, since the crop changes shape as it expands. |
+| `exp-waterfall` | 1280 | 1280×853 | §4 rail panel | atmospheric | |
 | `exp-coffee` | 1280 | 1280×853 | §4 rail panel | informative | South Indian filter coffee. |
 | `exp-spa` | 1280 | 1280×853 | §4 rail panel | informative | ⚠️ Amantaka, Laos. |
 | `gallery-cliff-figure` | 960 · 1920 | 1920×1080 | §5 mosaic, feature cell | atmospheric | **The anchor image** — a lone figure on a clifftop at dusk. Whatever replaces it must carry the same "this is the edge" feeling; the gallery is built around it. |

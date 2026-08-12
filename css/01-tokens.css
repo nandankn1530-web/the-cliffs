@@ -70,18 +70,22 @@
      the centered hero title's outer ends sit against the photo's brightest
      mist.
 
-     Raising these floors far enough to carry the headline on their own only
-     ever produced a muddy photograph: a full-frame gradient has to darken
-     everything to fix one band. So they sit at a middle setting that keeps
-     the glass nav legible at the top and the scroll cue legible at the
-     bottom, and the headline gets its own local pool instead — see
-     .hero__title::before in 05-sections.css.                                */
+     The right-hand floors are up (.40→.56, .22→.42) because the hero plate
+     is now place-band, which is a high-key photograph: bright saturated
+     green through the middle and blown to near-white at the top right,
+     exactly where a centred headline lands. Measured on it, the old values
+     left the gold accent at 2.25:1 and the white line at 3.08:1 over the
+     bright right side. These carry both past the large-text floor.
+
+     There is no local pool behind the headline any more — a radial patch
+     of shade parked mid-frame always read as a smudge on the picture. The
+     scrim does the whole job, which is what it is for.                     */
   --scrim:
     linear-gradient(100deg,
       rgba(10, 46, 38, .88) 0%,
-      rgba(10, 46, 38, .70) 30%,
-      rgba(10, 46, 38, .40) 58%,
-      rgba(10, 46, 38, .22) 88%),
+      rgba(10, 46, 38, .74) 30%,
+      rgba(10, 46, 38, .56) 58%,
+      rgba(10, 46, 38, .42) 88%),
     linear-gradient(to top,
       rgba(10, 46, 38, .78) 0%,
       rgba(10, 46, 38, .34) 38%,

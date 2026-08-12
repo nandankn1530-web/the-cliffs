@@ -92,6 +92,12 @@
   width:  min(95vw, calc(300px + var(--hp) * 1250px));
   height: min(85svh, calc(400px + var(--hp) * 400px));
   box-shadow: 0 30px 80px rgba(8, 20, 16, .45);
+  /* Not on screen until the scroll has actually started. The first frame is
+     the landscape and the name and nothing else; the card is something the
+     visitor uncovers rather than something already sitting there waiting.
+     The short dead zone before it starts is deliberate — beginning the fade
+     at zero makes it look like it was always there and merely faint. */
+  opacity: clamp(0, calc((var(--hp) - 0.05) * 4), 1);
 }
 
 .hero__media img {
