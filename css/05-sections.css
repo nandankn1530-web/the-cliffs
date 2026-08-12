@@ -3,31 +3,28 @@
    ========================================================================= */
 
 /* ═══ 1 · Hero ═════════════════════════════════════════════════════════════
-   A full-bleed photograph with the copy set into the open sky on its left,
-   and a two-plane parallax: the landscape drifts as you scroll while the
-   type very nearly holds.
+   Scroll-to-expand. A small portrait card of the waterfall sits in the
+   middle of the ridge photograph; as you scroll it opens into a wide
+   letterbox, the ridge behind it fades back, and the two halves of the
+   name part and clear the frame.
 
-   The photograph is the design decision here. Three earlier passes used
-   hero-cloudline, which is near-white and almost featureless in the exact
-   band a headline wants — so each pass added another layer of darkening
-   (a heavier scrim, a radial pool behind the words, a mask to hold cloud
-   off the type) and the picture got muddier every time. The problem was
-   never the treatment. A photograph that is bright where the words go
-   cannot carry white words.
+   THE ONE THING NOT COPIED FROM THE REFERENCE is how it reads scroll. That
+   component calls preventDefault() on every wheel event and forces
+   window.scrollTo(0, 0) on every scroll event until the media has finished
+   expanding — the page is pinned and the effect is driven by accumulated
+   wheel delta rather than by position. That is the "scroll gets stuck, then
+   catches up later" this project has already been through twice, and it
+   also breaks the scrollbar, Page Down, Home/End, keyboard scrolling and
+   find-in-page, none of which produce wheel events.
 
-   This one is built the other way round: a near-black cliff mass holding
-   the right of the frame, clean open sky on the left, and a figure at the
-   edge for scale. Cream on it clears 10:1 with nothing behind the type at
-   all, which is why the radial pool is gone rather than merely reduced.
+   A sticky stage over a tall track gives a pixel-identical result from real
+   scroll position: --hp (0 → 1) is how far through the track you are, and
+   every size and opacity below is a calc() off it. Nothing is intercepted,
+   so every way of moving down a page keeps working.
 
-   It also puts the copy back on the left, which is what --scrim's diagonal
-   pass in 01-tokens.css was drawn for in the first place — that gradient
-   has been carrying centred type it was never shaped for.
-
-   Everything is driven by one custom property, --hp (0 → 1), written to
-   .hero__stage by js/08-hero-scroll.js. --hp defaults to 0, the scene at
-   rest, so with scripts disabled or motion reduced this is simply a still
-   photograph with the name on it.                                         */
+   --hp defaults to 0 — the card closed — so with scripts disabled the hero
+   is a still photograph with the name on it, and the track collapses so
+   there is no dead scroll to sit through.                                  */
 
 .hero {
   background: var(--pine);
@@ -36,13 +33,9 @@
   padding-inline: 0;
 }
 
-/* The track supplies the scroll distance the planes separate over. Only
-   under `.js` — otherwise it is dead scroll past a static hero.
-
-   --hero-travel is the one number to change if this feels too long. It is
-   deliberately shorter than the reference's 1500px, because every pixel of
-   it is scrolling that does not move the page, and too much of that reads
-   as a broken scrollbar rather than as an effect. */
+/* --hero-travel is the one number to change if the open feels too long or
+   too abrupt. Every pixel of it is scrolling that does not move the page,
+   which is why it is well under the reference's effective distance. */
 .hero__track { position: relative; }
 .js .hero__track { height: calc(100svh + var(--hero-travel)); }
 
@@ -52,148 +45,104 @@
   height: 100svh;
   overflow: hidden;
   isolation: isolate;
+  display: grid;
+  place-items: center;
 }
 
 .js .hero__stage { position: sticky; top: 0; }
 
-.hero__layers { position: absolute; inset: 0; }
-
-/* Each plane is over-tall and hangs above the stage by more than it will
-   ever travel, so sliding down can never drag its top edge into view. That
-   is what the reference needed its black-line-overflow element to hide;
-   sizing the planes correctly means there is no seam to cover at all. */
-.hero__layer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-/* The landscape. Also pulls back from a slight push-in as it travels, so
-   the frame settles rather than merely sliding — the movement reads as a
-   camera rather than as a texture on a conveyor. */
-.hero__layer--1 {
-  top: -24vh;
-  z-index: 0;
-  transform:
-    translate3d(0, calc(var(--hp) * 20vh), 0)
-    scale(calc(1.07 - 0.07 * var(--hp)));
-}
-
-/* The copy travels barely at all. With only two planes the differential is
-   the entire depth cue, so the near plane has to be close to still — move
-   both by similar amounts and it reads as the page failing to scroll. */
-.hero__layer--3 {
-  top: 0;
-  z-index: 3;
-  display: grid;
-  place-items: center start;
-  padding-inline: var(--gutter);
-  transform: translate3d(0, calc(var(--hp) * 5vh), 0);
-}
-
+/* ── The ridge, behind everything ──────────────────────────────────────────
+   Recedes as the card opens over it. It stops at 0.15 rather than 0: the
+   card caps at 95vw / 85svh, so a margin of stage is always visible, and
+   fading the photograph to nothing leaves that margin as flat pine with a
+   hard edge against the picture. */
 .hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Biased right so the cliff and the figure hold the right of the frame
-     and the open sky stays on the left, under the type, at every crop. */
-  object-position: 64% 50%;
+  opacity: calc(1 - var(--hp) * 0.85);
 }
 
-/* ── Grade ─────────────────────────────────────────────────────────────────
-   The photograph is a cool, almost neutral grey; the rest of the site is
-   cream, brass and pine. Left alone it reads as a stock plate dropped into
-   someone else's palette.
-
-   soft-light rather than a flat overlay: it warms the midtones and leaves
-   both ends alone, so the sky takes the brass without the cliff turning to
-   mud or the highlights blowing. Warm across the sky, cooling to pine down
-   in the mass of the cliff, which is the direction dusk actually falls. */
-.hero__grade {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  background: linear-gradient(155deg,
-    rgba(214, 178, 126, .95) 0%,
-    rgba(196, 165, 123, .70) 38%,
-    rgba(90, 110, 104, .45) 68%,
-    rgba(10, 46, 38, .60) 100%);
-}
-
-/* Above the grade, below the copy: it darkens the photograph without
-   dulling the type that has to read against it. */
 .hero__scrim {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   background: var(--scrim);
+  opacity: calc(1 - var(--hp) * 0.5);
 }
 
-/* ── The copy block ────────────────────────────────────────────────────────
-   Held to a measure so the lines stack into a block with a clean left edge
-   rather than running out across the picture. */
-.hero__copy {
-  max-width: min(34rem, 92%);
-}
+/* ── The card that opens ───────────────────────────────────────────────────
+   Width and height are interpolated independently — 300→1550 against
+   400→800 — which is what makes it read as *opening* rather than as
+   scaling. A uniform scale keeps the aspect ratio and looks like a zoom;
+   these two rates crossing turn a portrait card into a letterbox.
 
-/* Brass-lift rather than brass: this sits on a graded photograph, not on
-   flat pine, and the lighter value holds where the picture goes pale.
-   The rule keeps it from floating as a stray line of small caps. */
-.hero__kicker {
-  color: var(--brass-lift);
-  margin-bottom: var(--s-4);
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  text-shadow: 0 1px 3px rgba(8, 20, 16, .75);
-}
-
-.hero__kicker::before {
-  content: '';
-  width: 32px;
-  height: 1px;
-  background: currentColor;
-  flex: none;
-  opacity: .8;
-}
-
-
-/* Hands the stage over to the pine below instead of ending on a cut edge. */
-.hero__fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 22%;
-  z-index: 5;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(14, 64, 52, 0), var(--pine));
-}
-
-
-/* ── Title ─────────────────────────────────────────────────────────────────
-   Two lines, the second italic and warm, ranged left with the rest of the
-   copy block. One <h1> with continuous text for assistive tech.
-
-   The radial pool that used to sit behind this is gone entirely, not turned
-   down. It existed to buy contrast the photograph would not give, and every
-   version of it was a soft dark blob parked in the middle of a picture. The
-   type now sits on the dark side of a dark photograph and clears 10:1
-   unaided, so there is nothing left for a pool to fix.                     */
-
-.hero__title {
+   The caps are what stop it overflowing on any viewport, so the raw pixel
+   ranges never need a breakpoint of their own. */
+.hero__media {
+  grid-area: 1 / 1;
+  z-index: 2;
+  position: relative;
   margin: 0;
+  overflow: hidden;
+  border-radius: var(--r-hero);
+  width:  min(95vw, calc(300px + var(--hp) * 1250px));
+  height: min(85svh, calc(400px + var(--hp) * 400px));
+  box-shadow: 0 30px 80px rgba(8, 20, 16, .45);
+}
+
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark while the name is over it, clearing as the name leaves. The
+   photograph earns its clarity. */
+.hero__media-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 20, 16, .78);
+  opacity: calc(0.85 - var(--hp) * 0.62);
+}
+
+@media (max-width: 768px) {
+  .hero__media {
+    width:  min(95vw, calc(300px + var(--hp) * 650px));
+    height: min(85svh, calc(400px + var(--hp) * 200px));
+  }
+}
+
+/* ── The name, parting ─────────────────────────────────────────────────────
+   One <h1> with continuous text for assistive tech; only the two spans
+   move.
+
+   The reference throws the words 150vw and keeps them opaque the whole way,
+   which is where this stopped measuring. The card is only 300px wide at
+   rest, so opaque words travelling that far are off it within the first
+   fifth of the scroll and out over the bare ridge behind — and that ridge
+   is near-white mist. Measured mid-flight: the accent hit 1.83:1 against
+   it, and even the white line only reached 2.55:1, both under the 3:1 floor
+   for large text.
+
+   So the travel is cut to 45vw and the fade finishes at --hp 0.5, timed
+   together so the words are always over the veiled card while any of them
+   is still visible. They part and dissolve rather than parting and flying,
+   which is also the better-looking of the two.                             */
+.hero__title {
+  grid-area: 1 / 1;
+  z-index: 3;
+  margin: 0;
+  width: 100%;
+  padding-inline: var(--gutter);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  /* No gap: --lh-display (0.98) already sets the leading, and adding 8px on
-     top of it opened the two lines into two separate statements instead of
-     one headline. */
+  align-items: center;
   gap: 0;
-  text-align: left;
+  text-align: center;
   color: var(--cream-lift);
   pointer-events: none;
 
@@ -203,34 +152,37 @@
   font-weight: var(--hero-wght);
   letter-spacing: var(--ls-hero);
 
-  /* Soft passes only. At 48–112px a tight 3px blur sits right at the glyph
-     edge and reads as a cheap stroke; the weight is doing that job. These
-     just lift the type off the landscape. */
   text-shadow:
-    0 2px 10px rgba(8, 20, 16, .45),
-    0 14px 48px rgba(8, 20, 16, .35);
+    0 2px 10px rgba(8, 20, 16, .55),
+    0 14px 48px rgba(8, 20, 16, .4);
+
+  /* Full strength to 0.16, gone by 0.5 — the point past which the words
+     would be clear of the card. This number and the 45vw below are a pair;
+     move one without the other and the type ends up over bare mist again. */
+  opacity: clamp(0, calc((0.5 - var(--hp)) / 0.34), 1);
 }
 
 .hero__word { display: block; }
-.hero__word--out { color: var(--sand); font-style: italic; }
+.hero__word--in  { transform: translateX(calc(var(--hp) * -45vw)); }
+.hero__word--out {
+  transform: translateX(calc(var(--hp) *  45vw));
+  color: var(--sand);
+  font-style: italic;
+}
 
 .hero__cue {
   position: absolute;
-  z-index: 1;
-  /* Ranged left, under the copy block, rather than centred under nothing.
-     A centred cue on a left-ranged hero is the one element that gives away
-     that a layout was assembled rather than composed. */
-  left: var(--gutter);
+  z-index: 4;
+  left: 0;
+  right: 0;
+  text-align: center;
   bottom: clamp(1.5rem, 5vh, 3rem);
   color: rgba(251, 249, 245, .82);
   text-shadow: 0 1px 3px rgba(8, 20, 16, .8), 0 4px 16px rgba(8, 20, 16, .6);
   pointer-events: none;
-  /* Gone early — its job is finished as soon as the visitor has taken the
-     hint, and it should not still be sitting there mid-parallax. */
-  opacity: clamp(0, calc(1 - var(--hp) * 2.2), 1);
-  /* A slow breath, so it reads as an invitation rather than a label.
-     Transform only — opacity above is scroll-driven, and an animation
-     touching opacity would win over it and pin the cue visible. */
+  /* Gone quickly: it is an instruction, and once followed it should not
+     still be sitting over the opening picture. */
+  opacity: clamp(0, calc(1 - var(--hp) * 3), 1);
   animation: cue-breathe 3.2s var(--ease-soft) infinite;
 }
 
@@ -239,7 +191,19 @@
   50%      { transform: translateY(4px); }
 }
 
-/* ── Supporting copy, on pine below the photograph ─────────────────────── */
+/* Hands the stage over to the pine below instead of ending on a cut edge. */
+.hero__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 18%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(14, 64, 52, 0), var(--pine));
+}
+
+
 
 .hero__after {
   position: relative;
@@ -251,27 +215,49 @@
   max-width: 60rem;
 }
 
-/* Reduced motion: the planes never separate and the cloud never drifts. The
-   track collapses so there is no pinned dead scroll to sit through either,
-   and --hp stays at its 0 default, which is the scene already composed —
-   the same photograph with the same name on it, simply still. */
+/* Reduced motion: the card never opens. The track collapses so there is no
+   pinned dead scroll to sit through, and --hp stays at its 0 default — the
+   closed card with the name across it, simply still. The cue goes with the
+   animation, since there is nothing left to scroll to open. */
 @media (prefers-reduced-motion: reduce) {
   .js .hero__track { height: auto; }
   .js .hero__stage { position: relative; }
   .hero__cue { display: none; }
 }
 
-/* Sits under the name on the photograph. Set in the body face, not the
-   display one: two lines of Bodoni stacked on top of each other compete,
-   and the sans reads as a caption to the name rather than as a second,
-   quieter headline arguing with it. */
+/* Back on flat pine rather than on a photograph, so plain brass is legal
+   again — brass-lift was there to hold against a graded picture — and the
+   text-shadow it needed for that is gone with it. */
+.hero__kicker {
+  color: var(--brass);
+  margin-bottom: var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.hero__kicker::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: currentColor;
+  flex: none;
+  opacity: .8;
+}
+
+/* The line that opens the block below the stage. Back in the display face
+   now that it is on pine rather than sharing a photograph with the name —
+   it was set in the sans to stop two sizes of Bodoni arguing over the same
+   picture, and that constraint is gone. */
 .hero__standfirst {
-  font-size: var(--t-lead);
-  line-height: 1.45;
-  color: rgba(244, 241, 234, .9);
-  text-shadow: 0 1px 3px rgba(8, 20, 16, .7), 0 4px 18px rgba(8, 20, 16, .5);
-  margin-top: var(--s-5);
-  max-width: 30ch;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.5rem, 3.2vw, 2.375rem);
+  line-height: 1.14;
+  letter-spacing: var(--ls-display);
+  color: var(--sand);
+  margin-bottom: var(--s-5);
+  max-width: 24ch;
 }
 
 .hero__lead {

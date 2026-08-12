@@ -15,8 +15,8 @@
      This srcset/sizes must stay identical to the hero <img>'s, or the browser
      picks a different candidate and downloads the picture twice. -->
 <link rel="preload" as="image" fetchpriority="high"
-      imagesrcset="assets/images/gallery-cliff-figure-960.jpg 960w,
-                   assets/images/gallery-cliff-figure-1920.jpg 1920w"
+      imagesrcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                   assets/images/hero-cloudline-1920.jpg 1920w"
       imagesizes="100vw">
 
 <meta property="og:type" content="website">
@@ -123,52 +123,52 @@
     <div class="hero__track">
       <div class="hero__stage">
 
-        <div class="hero__layers" data-parallax-layers>
+        <!-- The ridge, behind everything, receding as the card opens -->
+        <img data-slot="hero-cloudline"
+             src="assets/images/hero-cloudline-1920.jpg"
+             srcset="assets/images/hero-cloudline-1280.jpg 1280w,
+                     assets/images/hero-cloudline-1920.jpg 1920w"
+             sizes="100vw"
+             width="1920" height="1280"
+             fetchpriority="high" decoding="async"
+             class="hero__bg"
+             alt="Cloud moving through steep forested ridges in the Western Ghats, palms in the foreground.">
 
-          <!-- 1 · the photograph, travelling furthest -->
-          <div class="hero__layer hero__layer--1" data-parallax-layer="1">
-            <img data-slot="gallery-cliff-figure"
-                 src="assets/images/gallery-cliff-figure-1920.jpg"
-                 srcset="assets/images/gallery-cliff-figure-960.jpg 960w,
-                         assets/images/gallery-cliff-figure-1920.jpg 1920w"
-                 sizes="100vw"
-                 width="1920" height="1080"
-                 fetchpriority="high" decoding="async"
-                 class="hero__bg"
-                 alt="A lone figure standing at the edge of a clifftop high above the valley at dusk.">
-          </div>
+        <div class="hero__scrim" aria-hidden="true"></div>
 
-          <!-- Warms the photograph to dusk and deepens the cliff. -->
-          <div class="hero__grade" aria-hidden="true"></div>
-          <div class="hero__scrim" aria-hidden="true"></div>
+        <!-- The card that opens: a small portrait plate that becomes a
+             wide letterbox as you scroll. -->
+        <figure class="hero__media">
+          <img data-slot="exp-waterfall"
+               src="assets/images/exp-waterfall-1280.jpg"
+               sizes="(max-width: 768px) 95vw, min(95vw, 1550px)"
+               width="1280" height="853"
+               decoding="async"
+               alt="A shola stream falling through moss and black rock in the rain.">
+          <span class="hero__media-veil" aria-hidden="true"></span>
+        </figure>
 
-          <!-- 3 · the copy, travelling least, so it holds while the
-                   landscape drifts behind it -->
-          <div class="hero__layer hero__layer--3" data-parallax-layer="3">
-            <div class="hero__copy">
-              <p class="label hero__kicker">
-                <span class="altitude">1,420 M</span> &nbsp;·&nbsp; Chikmagalur, Karnataka
-              </p>
-
-              <h1 class="hero__title" id="hero-title">
-                <span class="hero__word hero__word--in">Western</span>
-                <span class="hero__word hero__word--out">Ghats</span>
-              </h1>
-
-              <p class="hero__standfirst">Above the cloud line, the Ghats go quiet.</p>
-            </div>
-          </div>
-        </div>
+        <h1 class="hero__title" id="hero-title">
+          <span class="hero__word hero__word--in">Western</span>
+          <span class="hero__word hero__word--out">Ghats</span>
+        </h1>
 
         <div class="hero__fade" aria-hidden="true"></div>
-        <p class="label hero__cue" aria-hidden="true">Scroll</p>
+        <p class="label hero__cue" aria-hidden="true">Scroll to open</p>
       </div>
     </div>
 
     <div class="hero__after">
       <div class="hero__inner">
-        <!-- The kicker and the standfirst both live on the photograph now.
-             Repeating them here read as a stutter rather than as emphasis. -->
+        <!-- The name leaves the frame as the card opens, so the section is
+             wordless by the time a visitor reaches this. The kicker and the
+             standfirst carry the copy from here. -->
+        <p class="label hero__kicker">
+          <span class="altitude">1,420 M</span> &nbsp;·&nbsp; Chikmagalur, Karnataka
+        </p>
+
+        <p class="hero__standfirst">Above the cloud line, the Ghats go quiet.</p>
+
         <p class="hero__lead">
           Three suites on a 1,400&nbsp;metre drop, an hour past the last town
           on the map. Step off the veranda and there is nothing between you
@@ -937,8 +937,8 @@
       "description": "A three-suite retreat perched at 1,420 metres in Karnataka's Western Ghats, India.",
       "url": "https://the-cliffs.netlify.app/",
       "image": [
-        "https://the-cliffs.netlify.app/assets/images/gallery-cliff-figure-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/hero-cloudline-1920.jpg",
+        "https://the-cliffs.netlify.app/assets/images/gallery-cliff-figure-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/suite-canopy-1920.jpg",
         "https://the-cliffs.netlify.app/assets/images/location-ridges-1920.jpg"
       ],
